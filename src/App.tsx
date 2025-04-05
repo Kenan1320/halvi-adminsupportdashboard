@@ -24,6 +24,11 @@ import EscalationsPage from "./pages/admin/EscalationsPage";
 import AnalyticsPage from "./pages/admin/AnalyticsPage";
 import SettingsPage from "./pages/admin/SettingsPage";
 
+// Support Agent Pages
+import LiveChatPage from "./pages/support/LiveChatPage";
+import TicketsPage from "./pages/support/TicketsPage";
+import RefundsPage from "./pages/support/RefundsPage";
+
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -51,6 +56,11 @@ const App = () => (
               <Route path="/escalations" element={<EscalationsPage />} />
               <Route path="/analytics" element={<AnalyticsPage />} />
               <Route path="/settings" element={<SettingsPage />} />
+              
+              {/* Support Agent Routes */}
+              <Route path="/support/chat" element={<LiveChatPage />} />
+              <Route path="/support/tickets" element={<TicketsPage />} />
+              <Route path="/support/refunds" element={<RefundsPage />} />
               
               {/* Catch-all route */}
               <Route path="*" element={<NotFound />} />

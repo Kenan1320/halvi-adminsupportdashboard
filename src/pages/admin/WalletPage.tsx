@@ -1,418 +1,755 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import DashboardLayout from '@/components/layout/DashboardLayout';
 import PageHeader from '@/components/admin/PageHeader';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import SmartTable from '@/components/admin/SmartTable';
-import StatisticsCard from '@/components/admin/StatisticsCard';
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
 import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { 
   Wallet, 
-  CreditCard, 
-  DollarSign, 
-  ArrowUpRight, 
-  ArrowDownRight, 
-  RefreshCw, 
-  BarChart4,
-  Clock,
-  FileText,
-  Filter,
-  AlertCircle,
-  Calendar
+  Search, 
+  Filter, 
+  ArrowDown, 
+  ArrowUp,
+  Store, 
+  User,
+  CreditCard,
+  DollarSign,
+  ArrowUpRight,
+  BarChart3, 
+  Plus,
+  Download
 } from 'lucide-react';
 
 // Mock data
-const transactionHistory = [
-  { id: 'TRX001', type: 'Payout', recipient: 'Halal Delights', amount: '-$2,450.78', date: '2023-04-02', status: 'Completed' },
-  { id: 'TRX002', type: 'Revenue', source: 'Commission', amount: '+$3,187.25', date: '2023-04-02', status: 'Completed' },
-  { id: 'TRX003', type: 'Refund', order: 'ORD-7842', amount: '-$129.99', date: '2023-04-01', status: 'Completed' },
-  { id: 'TRX004', type: 'Revenue', source: 'Platform Fees', amount: '+$849.50', date: '2023-04-01', status: 'Completed' },
-  { id: 'TRX005', type: 'Marketing', campaign: 'Google Ads', amount: '-$500.00', date: '2023-03-31', status: 'Completed' },
+const transactionsList = [
+  { 
+    id: 'TRX-20230615-001', 
+    type: 'payout',
+    direction: 'outgoing',
+    amount: '$1,245.60',
+    recipient: { name: 'Baraka Halal Meats', id: 'SHP-342', avatar: '/placeholder.svg', type: 'shop' },
+    status: 'completed',
+    date: 'June 15, 2023 - 14:32',
+    description: 'Weekly payout for order fulfillments',
+    reference: 'REF-P-20230615-342'
+  },
+  { 
+    id: 'TRX-20230614-024', 
+    type: 'commission',
+    direction: 'incoming',
+    amount: '$246.85',
+    sender: { name: 'Medina Spices', id: 'SHP-287', avatar: '/placeholder.svg', type: 'shop' },
+    status: 'completed',
+    date: 'June 14, 2023 - 10:15',
+    description: 'Platform commission for orders',
+    reference: 'REF-C-20230614-287'
+  },
+  { 
+    id: 'TRX-20230614-023', 
+    type: 'refund',
+    direction: 'outgoing',
+    amount: '$85.40',
+    recipient: { name: 'Ahmed Al-Farsi', id: 'USR-10492', avatar: '/placeholder.svg', type: 'customer' },
+    status: 'completed',
+    date: 'June 14, 2023 - 09:47',
+    description: 'Refund for duplicate payment (Order #HD78294)',
+    reference: 'REF-R-20230614-10492'
+  },
+  { 
+    id: 'TRX-20230613-019', 
+    type: 'payout',
+    direction: 'outgoing',
+    amount: '$875.20',
+    recipient: { name: 'Al-Madina Bakery', id: 'SHP-176', avatar: '/placeholder.svg', type: 'shop' },
+    status: 'completed',
+    date: 'June 13, 2023 - 16:08',
+    description: 'Weekly payout for order fulfillments',
+    reference: 'REF-P-20230613-176'
+  },
+  { 
+    id: 'TRX-20230613-018', 
+    type: 'commission',
+    direction: 'incoming',
+    amount: '$192.60',
+    sender: { name: 'Halal Sweet Delights', id: 'SHP-209', avatar: '/placeholder.svg', type: 'shop' },
+    status: 'completed',
+    date: 'June 13, 2023 - 14:22',
+    description: 'Platform commission for orders',
+    reference: 'REF-C-20230613-209'
+  },
+  { 
+    id: 'TRX-20230612-015', 
+    type: 'fee',
+    direction: 'incoming',
+    amount: '$25.00',
+    sender: { name: 'Sunnah Foods', id: 'SHP-123', avatar: '/placeholder.svg', type: 'shop' },
+    status: 'completed',
+    date: 'June 12, 2023 - 11:30',
+    description: 'Monthly subscription fee',
+    reference: 'REF-F-20230612-123'
+  },
+  { 
+    id: 'TRX-20230612-014', 
+    type: 'adjustment',
+    direction: 'outgoing',
+    amount: '$50.00',
+    recipient: { name: 'Layla Rahman', id: 'USR-10156', avatar: '/placeholder.svg', type: 'customer' },
+    status: 'completed',
+    date: 'June 12, 2023 - 10:15',
+    description: 'Goodwill credit for delivery delay',
+    reference: 'REF-A-20230612-10156'
+  },
+  { 
+    id: 'TRX-20230611-010', 
+    type: 'payout',
+    direction: 'outgoing',
+    amount: '$1,560.35',
+    recipient: { name: 'Baraka Halal Meats', id: 'SHP-342', avatar: '/placeholder.svg', type: 'shop' },
+    status: 'completed',
+    date: 'June 11, 2023 - 16:45',
+    description: 'Weekly payout for order fulfillments',
+    reference: 'REF-P-20230611-342'
+  },
 ];
 
-const pendingTransactions = [
-  { id: 'PEND001', type: 'Payout', recipient: 'Zabiha Meats', amount: '$3,245.67', date: '2023-04-05', status: 'Scheduled' },
-  { id: 'PEND002', type: 'Refund', order: 'ORD-8123', amount: '$89.99', date: '2023-04-04', status: 'Pending Approval' },
-  { id: 'PEND003', type: 'Marketing', campaign: 'Facebook Ads', amount: '$750.00', date: '2023-04-10', status: 'Scheduled' },
+const scheduledPayoutsList = [
+  { 
+    id: 'SCH-20230618-001', 
+    recipient: { name: 'Baraka Halal Meats', id: 'SHP-342', avatar: '/placeholder.svg', type: 'shop' },
+    amount: '$1,345.25',
+    scheduledDate: 'June 18, 2023 - 12:00',
+    status: 'pending',
+    description: 'Weekly payout for order fulfillments'
+  },
+  { 
+    id: 'SCH-20230618-002', 
+    recipient: { name: 'Al-Madina Bakery', id: 'SHP-176', avatar: '/placeholder.svg', type: 'shop' },
+    amount: '$986.40',
+    scheduledDate: 'June 18, 2023 - 12:00',
+    status: 'pending',
+    description: 'Weekly payout for order fulfillments'
+  },
+  { 
+    id: 'SCH-20230618-003', 
+    recipient: { name: 'Medina Spices', id: 'SHP-287', avatar: '/placeholder.svg', type: 'shop' },
+    amount: '$728.90',
+    scheduledDate: 'June 18, 2023 - 12:00',
+    status: 'pending',
+    description: 'Weekly payout for order fulfillments'
+  }
 ];
 
-const budgetAllocations = [
-  { id: 'BUD001', category: 'Shop Payouts', allocated: '$45,000.00', spent: '$32,567.89', remaining: '$12,432.11', status: 'Active' },
-  { id: 'BUD002', category: 'Marketing & Promotions', allocated: '$10,000.00', spent: '$4,250.00', remaining: '$5,750.00', status: 'Active' },
-  { id: 'BUD003', category: 'Refund Reserve', allocated: '$5,000.00', spent: '$1,876.45', remaining: '$3,123.55', status: 'Active' },
-  { id: 'BUD004', category: 'Platform Development', allocated: '$15,000.00', spent: '$8,945.00', remaining: '$6,055.00', status: 'Active' },
+const pendingRefundsList = [
+  { 
+    id: 'REF-20230616-001', 
+    customer: { name: 'Mohammed Nur', id: 'USR-10298', avatar: '/placeholder.svg' },
+    shop: { name: 'Baraka Halal Meats', id: 'SHP-342', avatar: '/placeholder.svg' },
+    amount: '$43.25',
+    requestDate: 'June 16, 2023 - 09:15',
+    order: 'ORD-56732',
+    status: 'pending review',
+    reason: 'Product damaged during delivery'
+  },
+  { 
+    id: 'REF-20230615-007', 
+    customer: { name: 'Fatima Zahra', id: 'USR-10387', avatar: '/placeholder.svg' },
+    shop: { name: 'Medina Spices', id: 'SHP-287', avatar: '/placeholder.svg' },
+    amount: '$16.50',
+    requestDate: 'June 15, 2023 - 14:22',
+    order: 'ORD-56701',
+    status: 'under investigation',
+    reason: 'Wrong item delivered'
+  },
+  { 
+    id: 'REF-20230615-006', 
+    customer: { name: 'Aisha Mahmood', id: 'USR-6024', avatar: '/placeholder.svg' },
+    shop: { name: 'Al-Madina Bakery', id: 'SHP-176', avatar: '/placeholder.svg' },
+    amount: '$28.75',
+    requestDate: 'June 15, 2023 - 11:08',
+    order: 'ORD-56698',
+    status: 'awaiting shop input',
+    reason: 'Quality issue with product'
+  }
 ];
 
 const WalletPage = () => {
-  const handleRowAction = (action: string, rowData: any) => {
-    console.log(`Action ${action} on:`, rowData);
-    // Implementation for different actions
-  };
+  const [searchQuery, setSearchQuery] = useState('');
+  const [transactionTypeFilter, setTransactionTypeFilter] = useState('all');
+
+  const filteredTransactions = transactionsList.filter(transaction => 
+    (transactionTypeFilter === 'all' || transaction.type === transactionTypeFilter) &&
+    (transaction.id.toLowerCase().includes(searchQuery.toLowerCase()) ||
+     transaction.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+     (transaction.recipient && transaction.recipient.name.toLowerCase().includes(searchQuery.toLowerCase())) ||
+     (transaction.sender && transaction.sender.name.toLowerCase().includes(searchQuery.toLowerCase())))
+  );
 
   return (
     <DashboardLayout title="Admin Wallet">
       <PageHeader 
         title="Admin Wallet" 
-        description="Manage platform finances and transactions"
-        showExport={true}
+        description="Manage platform funds, payments, and financial operations"
+        actions={
+          <div className="flex items-center gap-2">
+            <Button variant="outline" size="sm" className="h-8 gap-1">
+              <Download size={14} />
+              Export
+            </Button>
+            <Button size="sm" className="h-8 gap-1">
+              <Plus size={14} />
+              New Transaction
+            </Button>
+          </div>
+        }
       />
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-        <Card className="p-4 flex flex-col md:flex-row items-center gap-4">
-          <div className="h-16 w-16 rounded-full bg-gradient-halvi flex items-center justify-center">
-            <Wallet size={28} className="text-white" />
-          </div>
-          <div className="text-center md:text-left">
-            <p className="text-sm text-muted-foreground">Available Balance</p>
-            <h2 className="text-2xl md:text-3xl font-bold">$138,457.82</h2>
-            <p className="text-xs text-muted-foreground mt-1">Last updated: Today, 2:45 PM</p>
-          </div>
-        </Card>
-
-        <StatisticsCard 
-          title="Pending Payouts" 
-          value="$18,921.45" 
-          description="Next payout run: Tomorrow"
-          icon={<Clock size={20} />}
-        />
-        
-        <StatisticsCard 
-          title="Monthly Revenue" 
-          value="$42,187.33" 
-          change={{ value: 15.7, isPositive: true }} 
-          icon={<BarChart4 size={20} />}
-        />
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-        <Card className="p-4 flex items-center justify-between">
-          <div>
-            <p className="text-sm text-muted-foreground">Income</p>
-            <p className="text-xl font-bold text-green-500">+$58,457.82</p>
-            <p className="text-xs text-muted-foreground">This month</p>
-          </div>
-          <div className="h-10 w-10 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center">
-            <ArrowUpRight size={20} className="text-green-500" />
-          </div>
-        </Card>
-        
-        <Card className="p-4 flex items-center justify-between">
-          <div>
-            <p className="text-sm text-muted-foreground">Expenses</p>
-            <p className="text-xl font-bold text-red-500">-$36,890.15</p>
-            <p className="text-xs text-muted-foreground">This month</p>
-          </div>
-          <div className="h-10 w-10 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center">
-            <ArrowDownRight size={20} className="text-red-500" />
-          </div>
-        </Card>
-        
-        <Card className="p-4 flex items-center justify-between">
-          <div>
-            <p className="text-sm text-muted-foreground">Net Revenue</p>
-            <p className="text-xl font-bold">$21,567.67</p>
-            <p className="text-xs text-muted-foreground">This month</p>
-          </div>
-          <div className="h-10 w-10 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
-            <DollarSign size={20} className="text-blue-500" />
-          </div>
-        </Card>
-      </div>
-
-      <Card className="mb-6">
-        <Tabs defaultValue="transaction" className="w-full">
-          <TabsList className="w-full justify-start border-b rounded-none px-4 h-auto bg-transparent">
-            <TabsTrigger value="transaction" className="py-3 px-4">Transaction Ledger</TabsTrigger>
-            <TabsTrigger value="payout" className="py-3 px-4">Payout Management</TabsTrigger>
-            <TabsTrigger value="refund" className="py-3 px-4">Refund & Dispute Funding</TabsTrigger>
-            <TabsTrigger value="budget" className="py-3 px-4">Budgeting & Allocation</TabsTrigger>
-          </TabsList>
-
-          <TabsContent value="transaction" className="p-0 mt-0">
-            <div className="p-4 border-b flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <h3 className="font-medium">Transaction History</h3>
-                <Button variant="outline" size="sm" className="gap-1">
-                  <Filter size={14} />
-                  Filter
-                </Button>
-                <Button variant="outline" size="sm" className="gap-1">
-                  <Calendar size={14} />
-                  Date Range
-                </Button>
-              </div>
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+        <Card>
+          <CardContent className="pt-6">
+            <div className="flex items-start justify-between">
               <div>
-                <Button variant="outline" size="sm" className="gap-1">
-                  <FileText size={14} />
-                  Export
-                </Button>
+                <p className="text-sm font-medium text-muted-foreground">Available Balance</p>
+                <p className="text-2xl font-bold mt-1">$72,568.42</p>
+              </div>
+              <div className="rounded-lg p-2 bg-primary/10">
+                <Wallet className="h-5 w-5 text-primary" />
               </div>
             </div>
-            
-            <SmartTable
-              columns={[
-                { key: 'id', title: 'Transaction ID', sortable: true },
-                { key: 'type', title: 'Type', sortable: true },
-                { key: 'recipient', title: 'Recipient/Source', sortable: true },
-                { key: 'amount', title: 'Amount', sortable: true },
-                { key: 'date', title: 'Date', sortable: true },
-                { key: 'status', title: 'Status', sortable: true },
-              ]}
-              data={transactionHistory}
-              filters={['All', 'Payouts', 'Revenue', 'Refunds', 'Marketing']}
-              rowActions={['View Details', 'Download Receipt']}
-              onRowAction={handleRowAction}
-              pagination={{
-                page: 1,
-                pageSize: 10,
-                total: 157,
-                onChange: (page) => console.log('Changed to page', page)
-              }}
-            />
-          </TabsContent>
-
-          <TabsContent value="payout" className="p-0 mt-0">
-            <div className="p-4 border-b flex items-center justify-between">
-              <div>
-                <h3 className="font-medium">Pending Payouts</h3>
-                <p className="text-sm text-muted-foreground">Scheduled and pending payouts to shops</p>
+            <div className="mt-4 flex items-center text-xs">
+              <div className="text-green-500 flex items-center">
+                <ArrowUpRight className="h-3 w-3 mr-1" />
+                8.2%
               </div>
-              <div className="flex items-center gap-2">
-                <Button variant="outline" size="sm">
-                  <Calendar size={16} className="mr-2" />
-                  Schedule
-                </Button>
-                <Button size="sm">
-                  <CreditCard size={16} className="mr-2" />
-                  Process Now
-                </Button>
+              <span className="ml-1 text-muted-foreground">from last month</span>
+            </div>
+          </CardContent>
+        </Card>
+        
+        <Card>
+          <CardContent className="pt-6">
+            <div className="flex items-start justify-between">
+              <div>
+                <p className="text-sm font-medium text-muted-foreground">Revenue (MTD)</p>
+                <p className="text-2xl font-bold mt-1">$24,685.30</p>
+              </div>
+              <div className="rounded-lg p-2 bg-green-500/10">
+                <ArrowUp className="h-5 w-5 text-green-500" />
               </div>
             </div>
-            
-            <SmartTable
-              columns={[
-                { key: 'id', title: 'Payout ID', sortable: true },
-                { key: 'type', title: 'Type', sortable: true },
-                { key: 'recipient', title: 'Recipient', sortable: true },
-                { key: 'amount', title: 'Amount', sortable: true },
-                { key: 'date', title: 'Scheduled Date', sortable: true },
-                { key: 'status', title: 'Status', sortable: true },
-              ]}
-              data={pendingTransactions}
-              rowActions={['Process Now', 'Edit', 'Cancel', 'View Details']}
-              onRowAction={handleRowAction}
-              pagination={{
-                page: 1,
-                pageSize: 10,
-                total: 12,
-                onChange: (page) => console.log('Changed to page', page)
-              }}
-            />
-            
-            <div className="p-4">
-              <Card className="p-4 border-l-4 border-l-blue-400">
-                <div className="flex items-start gap-3">
-                  <CreditCard size={20} className="text-blue-500 mt-0.5" />
-                  <div>
-                    <h3 className="font-medium">Instant Payout System</h3>
-                    <p className="text-sm text-muted-foreground mt-1">Instant payouts are available for verified shops with good standing. Processing fees apply.</p>
-                  </div>
+            <div className="mt-4 flex items-center text-xs">
+              <div className="text-green-500 flex items-center">
+                <ArrowUpRight className="h-3 w-3 mr-1" />
+                12.5%
+              </div>
+              <span className="ml-1 text-muted-foreground">vs last month</span>
+            </div>
+          </CardContent>
+        </Card>
+        
+        <Card>
+          <CardContent className="pt-6">
+            <div className="flex items-start justify-between">
+              <div>
+                <p className="text-sm font-medium text-muted-foreground">Pending Payouts</p>
+                <p className="text-2xl font-bold mt-1">$15,640.75</p>
+              </div>
+              <div className="rounded-lg p-2 bg-amber-500/10">
+                <CreditCard className="h-5 w-5 text-amber-500" />
+              </div>
+            </div>
+            <div className="mt-4 flex items-center text-xs">
+              <span className="text-muted-foreground">Next payout: June 18, 2023</span>
+            </div>
+          </CardContent>
+        </Card>
+        
+        <Card>
+          <CardContent className="pt-6">
+            <div className="flex items-start justify-between">
+              <div>
+                <p className="text-sm font-medium text-muted-foreground">Pending Refunds</p>
+                <p className="text-2xl font-bold mt-1">$1,286.50</p>
+              </div>
+              <div className="rounded-lg p-2 bg-blue-500/10">
+                <ArrowDown className="h-5 w-5 text-blue-500" />
+              </div>
+            </div>
+            <div className="mt-4 flex items-center text-xs">
+              <span className="text-muted-foreground">8 refunds awaiting processing</span>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      <Tabs defaultValue="transactions" className="w-full mb-8">
+        <TabsList className="w-full md:w-auto mb-4">
+          <TabsTrigger value="transactions" className="flex-1 md:flex-none">
+            <BarChart3 className="h-4 w-4 mr-2" />
+            Transactions
+          </TabsTrigger>
+          <TabsTrigger value="scheduled" className="flex-1 md:flex-none">
+            <CreditCard className="h-4 w-4 mr-2" />
+            Scheduled Payouts
+          </TabsTrigger>
+          <TabsTrigger value="refunds" className="flex-1 md:flex-none">
+            <ArrowDown className="h-4 w-4 mr-2" />
+            Pending Refunds
+          </TabsTrigger>
+        </TabsList>
+        
+        <TabsContent value="transactions" className="mt-0">
+          <Card>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-lg font-medium">Transaction History</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
+                <div className="relative w-full sm:w-auto sm:min-w-[300px]">
+                  <Search className="absolute top-1/2 transform -translate-y-1/2 left-3 h-4 w-4 text-muted-foreground pointer-events-none" />
+                  <Input 
+                    placeholder="Search transactions..." 
+                    className="pl-9" 
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                  />
                 </div>
-              </Card>
-            </div>
-          </TabsContent>
-
-          <TabsContent value="refund" className="p-4 mt-0">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-              <Card className="p-4">
-                <h3 className="text-lg font-medium mb-4">Refund Processing</h3>
-                
-                <div className="space-y-4">
-                  <div>
-                    <label className="text-sm font-medium block mb-1">Order ID</label>
-                    <input 
-                      type="text" 
-                      placeholder="Enter order ID"
-                      className="w-full h-9 rounded-md border border-input bg-background px-3 text-sm"
-                    />
-                  </div>
-                  
-                  <div>
-                    <label className="text-sm font-medium block mb-1">Refund Amount</label>
-                    <div className="flex">
-                      <div className="flex items-center h-9 rounded-l-md border border-r-0 border-input bg-muted px-3">
-                        <span className="text-sm text-muted-foreground">$</span>
-                      </div>
-                      <input 
-                        type="number" 
-                        className="flex-1 h-9 rounded-r-md border border-input bg-background px-3 text-sm"
-                      />
-                    </div>
-                  </div>
-                  
-                  <div>
-                    <label className="text-sm font-medium block mb-1">Refund Reason</label>
-                    <select className="w-full h-9 rounded-md border border-input bg-background px-3 text-sm">
-                      <option>Product damaged</option>
-                      <option>Wrong item received</option>
-                      <option>Customer changed mind</option>
-                      <option>Order not received</option>
-                      <option>Other</option>
-                    </select>
-                  </div>
-                  
-                  <Button className="w-full">
-                    <RefreshCw size={16} className="mr-2" />
-                    Process Refund
+                <div className="flex items-center gap-2 overflow-x-auto pb-2 w-full sm:w-auto">
+                  <Button variant={transactionTypeFilter === 'all' ? 'default' : 'outline'} size="sm" onClick={() => setTransactionTypeFilter('all')}>
+                    All
+                  </Button>
+                  <Button variant={transactionTypeFilter === 'payout' ? 'default' : 'outline'} size="sm" onClick={() => setTransactionTypeFilter('payout')}>
+                    Payouts
+                  </Button>
+                  <Button variant={transactionTypeFilter === 'commission' ? 'default' : 'outline'} size="sm" onClick={() => setTransactionTypeFilter('commission')}>
+                    Commissions
+                  </Button>
+                  <Button variant={transactionTypeFilter === 'refund' ? 'default' : 'outline'} size="sm" onClick={() => setTransactionTypeFilter('refund')}>
+                    Refunds
+                  </Button>
+                  <Button variant={transactionTypeFilter === 'fee' ? 'default' : 'outline'} size="sm" onClick={() => setTransactionTypeFilter('fee')}>
+                    Fees
+                  </Button>
+                  <Button variant={transactionTypeFilter === 'adjustment' ? 'default' : 'outline'} size="sm" onClick={() => setTransactionTypeFilter('adjustment')}>
+                    Adjustments
                   </Button>
                 </div>
-              </Card>
+              </div>
               
-              <Card className="p-4">
-                <h3 className="text-lg font-medium mb-4">Dispute Resolution Fund</h3>
+              <div className="overflow-auto">
+                <table className="w-full border-collapse">
+                  <thead>
+                    <tr className="border-b">
+                      <th className="text-left py-3 px-4 font-medium text-muted-foreground">Transaction ID</th>
+                      <th className="text-left py-3 px-4 font-medium text-muted-foreground">Type</th>
+                      <th className="text-left py-3 px-4 font-medium text-muted-foreground">From/To</th>
+                      <th className="text-left py-3 px-4 font-medium text-muted-foreground">Amount</th>
+                      <th className="text-left py-3 px-4 font-medium text-muted-foreground">Date</th>
+                      <th className="text-left py-3 px-4 font-medium text-muted-foreground">Status</th>
+                      <th className="text-left py-3 px-4 font-medium text-muted-foreground">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {filteredTransactions.map((transaction) => (
+                      <tr key={transaction.id} className="border-b hover:bg-muted/50 transition-colors">
+                        <td className="py-3 px-4">
+                          <div>
+                            <p className="font-medium">{transaction.id}</p>
+                            <p className="text-xs text-muted-foreground">{transaction.reference}</p>
+                          </div>
+                        </td>
+                        <td className="py-3 px-4">
+                          <Badge variant="outline" className={`
+                            ${transaction.type === 'payout' ? 'bg-blue-50 text-blue-600 border-blue-200' : ''}
+                            ${transaction.type === 'commission' ? 'bg-green-50 text-green-600 border-green-200' : ''}
+                            ${transaction.type === 'refund' ? 'bg-amber-50 text-amber-600 border-amber-200' : ''}
+                            ${transaction.type === 'fee' ? 'bg-purple-50 text-purple-600 border-purple-200' : ''}
+                            ${transaction.type === 'adjustment' ? 'bg-red-50 text-red-600 border-red-200' : ''}
+                          `}>
+                            {transaction.type.charAt(0).toUpperCase() + transaction.type.slice(1)}
+                          </Badge>
+                        </td>
+                        <td className="py-3 px-4">
+                          {transaction.direction === 'outgoing' ? (
+                            <div className="flex items-center gap-2">
+                              <ArrowUp className="h-4 w-4 text-red-500" />
+                              <div className="flex items-center gap-2">
+                                <Avatar className="h-6 w-6">
+                                  <AvatarImage src={transaction.recipient.avatar} alt={transaction.recipient.name} />
+                                  <AvatarFallback className={`
+                                    ${transaction.recipient.type === 'customer' ? 'bg-blue-100 text-blue-500' : ''}
+                                    ${transaction.recipient.type === 'shop' ? 'bg-amber-100 text-amber-500' : ''}
+                                  `}>
+                                    {transaction.recipient.type === 'customer' ? (
+                                      <User className="h-3 w-3" />
+                                    ) : (
+                                      <Store className="h-3 w-3" />
+                                    )}
+                                  </AvatarFallback>
+                                </Avatar>
+                                <span>{transaction.recipient.name}</span>
+                              </div>
+                            </div>
+                          ) : (
+                            <div className="flex items-center gap-2">
+                              <ArrowDown className="h-4 w-4 text-green-500" />
+                              <div className="flex items-center gap-2">
+                                <Avatar className="h-6 w-6">
+                                  <AvatarImage src={transaction.sender.avatar} alt={transaction.sender.name} />
+                                  <AvatarFallback className={`
+                                    ${transaction.sender.type === 'customer' ? 'bg-blue-100 text-blue-500' : ''}
+                                    ${transaction.sender.type === 'shop' ? 'bg-amber-100 text-amber-500' : ''}
+                                  `}>
+                                    {transaction.sender.type === 'customer' ? (
+                                      <User className="h-3 w-3" />
+                                    ) : (
+                                      <Store className="h-3 w-3" />
+                                    )}
+                                  </AvatarFallback>
+                                </Avatar>
+                                <span>{transaction.sender.name}</span>
+                              </div>
+                            </div>
+                          )}
+                        </td>
+                        <td className="py-3 px-4">
+                          <div className={`font-semibold ${transaction.direction === 'outgoing' ? 'text-red-500' : 'text-green-500'}`}>
+                            {transaction.direction === 'outgoing' ? '- ' : '+ '}{transaction.amount}
+                          </div>
+                        </td>
+                        <td className="py-3 px-4">
+                          <p className="text-sm">{transaction.date}</p>
+                        </td>
+                        <td className="py-3 px-4">
+                          <Badge variant={transaction.status === 'completed' ? 'success' : 'outline'}>
+                            {transaction.status}
+                          </Badge>
+                        </td>
+                        <td className="py-3 px-4">
+                          <div className="flex items-center gap-2">
+                            <Button variant="outline" size="sm">
+                              View
+                            </Button>
+                            <Button variant="outline" size="sm">
+                              Receipt
+                            </Button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
                 
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm">Available Fund</span>
-                    <span className="text-lg font-bold">$5,000.00</span>
+                {filteredTransactions.length === 0 && (
+                  <div className="text-center py-12">
+                    <Wallet className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
+                    <h3 className="text-lg font-medium">No transactions found</h3>
+                    <p className="text-muted-foreground">Try adjusting your filters or search query</p>
                   </div>
-                  
-                  <div className="h-2 w-full bg-muted rounded-full overflow-hidden">
-                    <div className="h-full bg-halvi-accent rounded-full" style={{ width: '62%' }}></div>
-                  </div>
-                  
-                  <div className="flex items-center justify-between text-xs text-muted-foreground">
-                    <span>Used: $3,123.55</span>
-                    <span>Allocated: $5,000.00</span>
-                  </div>
-                  
-                  <div className="pt-2">
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="text-sm">Active Disputes</span>
-                      <span className="bg-amber-100 dark:bg-amber-900/30 text-amber-800 dark:text-amber-400 text-xs px-2 py-0.5 rounded">12 pending</span>
-                    </div>
-                    
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm">Avg. Resolution Time</span>
-                      <span className="text-sm font-medium">1.2 days</span>
-                    </div>
-                  </div>
-                  
-                  <div className="flex gap-2">
-                    <Button variant="outline" className="flex-1">
-                      Add Funds
-                    </Button>
-                    <Button variant="outline" className="flex-1">
-                      View Disputes
-                    </Button>
-                  </div>
-                </div>
-              </Card>
-            </div>
-            
-            <Card className="p-4 border-l-4 border-l-yellow-400">
-              <div className="flex items-start gap-3">
-                <AlertCircle size={20} className="text-yellow-500 mt-0.5" />
-                <div>
-                  <h3 className="font-medium">High Volume of Refunds</h3>
-                  <p className="text-sm text-muted-foreground mt-1">3 shops have unusually high refund rates this week. <Button variant="link" className="p-0 h-auto text-sm">Investigate</Button></p>
+                )}
+              </div>
+              
+              <div className="flex items-center justify-between mt-4">
+                <p className="text-sm text-muted-foreground">Showing {filteredTransactions.length} of {transactionsList.length} transactions</p>
+                <div className="flex items-center gap-2">
+                  <Button variant="outline" size="sm" disabled>Previous</Button>
+                  <Button variant="outline" size="sm">Next</Button>
                 </div>
               </div>
-            </Card>
-          </TabsContent>
-
-          <TabsContent value="budget" className="p-0 mt-0">
-            <SmartTable
-              title="Budget Allocations"
-              subtitle="Financial planning and resource allocation"
-              columns={[
-                { key: 'id', title: 'Budget ID', sortable: true },
-                { key: 'category', title: 'Category', sortable: true },
-                { key: 'allocated', title: 'Allocated', sortable: true },
-                { key: 'spent', title: 'Spent', sortable: true },
-                { key: 'remaining', title: 'Remaining', sortable: true },
-                { key: 'status', title: 'Status', sortable: true },
-              ]}
-              data={budgetAllocations}
-              rowActions={['View Details', 'Add Funds', 'Edit Budget', 'Generate Report']}
-              onRowAction={handleRowAction}
-              actions={
-                <Button size="sm">
-                  <PlusCircle size={16} className="mr-2" />
-                  New Budget
+            </CardContent>
+          </Card>
+        </TabsContent>
+        
+        <TabsContent value="scheduled" className="mt-0">
+          <Card>
+            <CardHeader className="pb-2">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                <CardTitle className="text-lg font-medium">Scheduled Payouts</CardTitle>
+                <Button size="sm" className="gap-1">
+                  <Plus size={14} />
+                  Schedule New Payout
                 </Button>
-              }
-            />
-            
-            <div className="p-4 grid grid-cols-1 md:grid-cols-2 gap-4">
-              <Card className="p-4">
-                <h3 className="font-medium mb-3">Budget Overview</h3>
-                <div className="grid grid-cols-2 gap-2 mt-4">
-                  <div className="bg-muted/50 rounded-md p-3">
-                    <p className="text-xs text-muted-foreground">Total Allocated</p>
-                    <p className="text-lg font-bold">$75,000.00</p>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className="overflow-auto">
+                <table className="w-full border-collapse">
+                  <thead>
+                    <tr className="border-b">
+                      <th className="text-left py-3 px-4 font-medium text-muted-foreground">ID</th>
+                      <th className="text-left py-3 px-4 font-medium text-muted-foreground">Recipient</th>
+                      <th className="text-left py-3 px-4 font-medium text-muted-foreground">Amount</th>
+                      <th className="text-left py-3 px-4 font-medium text-muted-foreground">Scheduled Date</th>
+                      <th className="text-left py-3 px-4 font-medium text-muted-foreground">Status</th>
+                      <th className="text-left py-3 px-4 font-medium text-muted-foreground">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {scheduledPayoutsList.map((payout) => (
+                      <tr key={payout.id} className="border-b hover:bg-muted/50 transition-colors">
+                        <td className="py-3 px-4">
+                          <div>
+                            <p className="font-medium">{payout.id}</p>
+                            <p className="text-xs text-muted-foreground">{payout.description}</p>
+                          </div>
+                        </td>
+                        <td className="py-3 px-4">
+                          <div className="flex items-center gap-2">
+                            <Avatar className="h-6 w-6">
+                              <AvatarImage src={payout.recipient.avatar} alt={payout.recipient.name} />
+                              <AvatarFallback className="bg-amber-100 text-amber-500">
+                                <Store className="h-3 w-3" />
+                              </AvatarFallback>
+                            </Avatar>
+                            <div>
+                              <p>{payout.recipient.name}</p>
+                              <p className="text-xs text-muted-foreground">{payout.recipient.id}</p>
+                            </div>
+                          </div>
+                        </td>
+                        <td className="py-3 px-4">
+                          <div className="font-semibold text-red-500">
+                            - {payout.amount}
+                          </div>
+                        </td>
+                        <td className="py-3 px-4">
+                          <p className="text-sm">{payout.scheduledDate}</p>
+                        </td>
+                        <td className="py-3 px-4">
+                          <Badge variant="outline" className="bg-amber-50 text-amber-600 border-amber-200">
+                            {payout.status}
+                          </Badge>
+                        </td>
+                        <td className="py-3 px-4">
+                          <div className="flex items-center gap-2">
+                            <Button variant="outline" size="sm">
+                              Edit
+                            </Button>
+                            <Button variant="outline" size="sm">
+                              Process Now
+                            </Button>
+                            <Button variant="outline" size="sm" className="text-red-500 hover:text-red-500">
+                              Cancel
+                            </Button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+                
+                {scheduledPayoutsList.length === 0 && (
+                  <div className="text-center py-12">
+                    <CreditCard className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
+                    <h3 className="text-lg font-medium">No scheduled payouts</h3>
+                    <p className="text-muted-foreground">All payouts have been processed</p>
                   </div>
-                  <div className="bg-muted/50 rounded-md p-3">
-                    <p className="text-xs text-muted-foreground">Total Spent</p>
-                    <p className="text-lg font-bold">$47,639.34</p>
-                  </div>
-                  <div className="bg-muted/50 rounded-md p-3">
-                    <p className="text-xs text-muted-foreground">Remaining</p>
-                    <p className="text-lg font-bold text-green-500">$27,360.66</p>
-                  </div>
-                  <div className="bg-muted/50 rounded-md p-3">
-                    <p className="text-xs text-muted-foreground">Forecasted Expenses</p>
-                    <p className="text-lg font-bold text-amber-500">$22,450.00</p>
-                  </div>
-                </div>
-              </Card>
+                )}
+              </div>
               
-              <Card className="p-4">
-                <h3 className="font-medium mb-3">Top Expenses</h3>
-                <div className="space-y-3 mt-4">
-                  <div>
-                    <div className="flex justify-between mb-1 text-sm">
-                      <span>Shop Payouts</span>
-                      <span>68%</span>
+              <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
+                <Card className="bg-muted/50">
+                  <CardContent className="p-4">
+                    <div className="flex items-start gap-3">
+                      <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
+                        <DollarSign className="h-5 w-5 text-primary" />
+                      </div>
+                      <div>
+                        <p className="font-medium">Total Scheduled</p>
+                        <p className="text-sm text-muted-foreground mt-1">Amount to be paid out</p>
+                        <p className="text-xl font-bold text-red-500 mt-1">- $3,060.55</p>
+                      </div>
                     </div>
-                    <div className="w-full bg-muted rounded-full h-2">
-                      <div className="bg-halvi-accent h-2 rounded-full" style={{ width: '68%' }}></div>
+                  </CardContent>
+                </Card>
+                
+                <Card className="bg-muted/50">
+                  <CardContent className="p-4">
+                    <div className="flex items-start gap-3">
+                      <div className="h-10 w-10 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
+                        <Store className="h-5 w-5 text-blue-500" />
+                      </div>
+                      <div>
+                        <p className="font-medium">Recipients</p>
+                        <p className="text-sm text-muted-foreground mt-1">Shops to be paid</p>
+                        <p className="text-xl font-bold mt-1">3 shops</p>
+                      </div>
                     </div>
+                  </CardContent>
+                </Card>
+                
+                <Card className="bg-muted/50">
+                  <CardContent className="p-4">
+                    <div className="flex items-start gap-3">
+                      <div className="h-10 w-10 rounded-full bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center">
+                        <CreditCard className="h-5 w-5 text-amber-500" />
+                      </div>
+                      <div>
+                        <p className="font-medium">Next Payout</p>
+                        <p className="text-sm text-muted-foreground mt-1">Scheduled time</p>
+                        <p className="text-xl font-bold mt-1">In 2 days</p>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+        
+        <TabsContent value="refunds" className="mt-0">
+          <Card>
+            <CardHeader className="pb-2">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                <CardTitle className="text-lg font-medium">Pending Refunds</CardTitle>
+                <Button variant="outline" size="sm" className="gap-1">
+                  <ArrowDown size={14} />
+                  Process All Refunds
+                </Button>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className="overflow-auto">
+                <table className="w-full border-collapse">
+                  <thead>
+                    <tr className="border-b">
+                      <th className="text-left py-3 px-4 font-medium text-muted-foreground">ID</th>
+                      <th className="text-left py-3 px-4 font-medium text-muted-foreground">Customer</th>
+                      <th className="text-left py-3 px-4 font-medium text-muted-foreground">Shop</th>
+                      <th className="text-left py-3 px-4 font-medium text-muted-foreground">Amount</th>
+                      <th className="text-left py-3 px-4 font-medium text-muted-foreground">Request Date</th>
+                      <th className="text-left py-3 px-4 font-medium text-muted-foreground">Status</th>
+                      <th className="text-left py-3 px-4 font-medium text-muted-foreground">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {pendingRefundsList.map((refund) => (
+                      <tr key={refund.id} className="border-b hover:bg-muted/50 transition-colors">
+                        <td className="py-3 px-4">
+                          <div>
+                            <p className="font-medium">{refund.id}</p>
+                            <p className="text-xs text-muted-foreground">Order: {refund.order}</p>
+                          </div>
+                        </td>
+                        <td className="py-3 px-4">
+                          <div className="flex items-center gap-2">
+                            <Avatar className="h-6 w-6">
+                              <AvatarImage src={refund.customer.avatar} alt={refund.customer.name} />
+                              <AvatarFallback className="bg-blue-100 text-blue-500">
+                                <User className="h-3 w-3" />
+                              </AvatarFallback>
+                            </Avatar>
+                            <div>
+                              <p>{refund.customer.name}</p>
+                              <p className="text-xs text-muted-foreground">{refund.customer.id}</p>
+                            </div>
+                          </div>
+                        </td>
+                        <td className="py-3 px-4">
+                          <div className="flex items-center gap-2">
+                            <Avatar className="h-6 w-6">
+                              <AvatarImage src={refund.shop.avatar} alt={refund.shop.name} />
+                              <AvatarFallback className="bg-amber-100 text-amber-500">
+                                <Store className="h-3 w-3" />
+                              </AvatarFallback>
+                            </Avatar>
+                            <div>
+                              <p>{refund.shop.name}</p>
+                              <p className="text-xs text-muted-foreground">{refund.shop.id}</p>
+                            </div>
+                          </div>
+                        </td>
+                        <td className="py-3 px-4">
+                          <div className="font-semibold text-red-500">
+                            {refund.amount}
+                          </div>
+                        </td>
+                        <td className="py-3 px-4">
+                          <p className="text-sm">{refund.requestDate}</p>
+                        </td>
+                        <td className="py-3 px-4">
+                          <Badge variant="outline" className={`
+                            ${refund.status === 'pending review' ? 'bg-amber-50 text-amber-600 border-amber-200' : ''}
+                            ${refund.status === 'under investigation' ? 'bg-blue-50 text-blue-600 border-blue-200' : ''}
+                            ${refund.status === 'awaiting shop input' ? 'bg-purple-50 text-purple-600 border-purple-200' : ''}
+                          `}>
+                            {refund.status}
+                          </Badge>
+                        </td>
+                        <td className="py-3 px-4">
+                          <div className="flex items-center gap-2">
+                            <Button variant="outline" size="sm">
+                              Review
+                            </Button>
+                            <Button variant="outline" size="sm" className="text-green-500 hover:text-green-500">
+                              Approve
+                            </Button>
+                            <Button variant="outline" size="sm" className="text-red-500 hover:text-red-500">
+                              Deny
+                            </Button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+                
+                {pendingRefundsList.length === 0 && (
+                  <div className="text-center py-12">
+                    <ArrowDown className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
+                    <h3 className="text-lg font-medium">No pending refunds</h3>
+                    <p className="text-muted-foreground">All refunds have been processed</p>
                   </div>
-                  <div>
-                    <div className="flex justify-between mb-1 text-sm">
-                      <span>Marketing</span>
-                      <span>15%</span>
+                )}
+              </div>
+              
+              <div className="mt-6">
+                <Card className="bg-muted/50">
+                  <CardContent className="p-4">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      <div className="flex items-start gap-3">
+                        <div className="h-10 w-10 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center">
+                          <ArrowDown className="h-5 w-5 text-red-500" />
+                        </div>
+                        <div>
+                          <p className="font-medium">Total Pending</p>
+                          <p className="text-xl font-bold text-red-500 mt-1">{pendingRefundsList.length} refunds</p>
+                          <p className="text-sm text-muted-foreground mt-1">$88.50 in total</p>
+                        </div>
+                      </div>
+                      
+                      <div className="flex items-start gap-3">
+                        <div className="h-10 w-10 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
+                          <User className="h-5 w-5 text-blue-500" />
+                        </div>
+                        <div>
+                          <p className="font-medium">Customers Waiting</p>
+                          <p className="text-xl font-bold mt-1">3 customers</p>
+                          <p className="text-sm text-muted-foreground mt-1">Awaiting refunds</p>
+                        </div>
+                      </div>
+                      
+                      <div className="flex items-start gap-3">
+                        <div className="h-10 w-10 rounded-full bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center">
+                          <Wallet className="h-5 w-5 text-amber-500" />
+                        </div>
+                        <div>
+                          <p className="font-medium">Average Time</p>
+                          <p className="text-xl font-bold mt-1">24 hours</p>
+                          <p className="text-sm text-muted-foreground mt-1">To process refunds</p>
+                        </div>
+                      </div>
                     </div>
-                    <div className="w-full bg-muted rounded-full h-2">
-                      <div className="bg-halvi-amber h-2 rounded-full" style={{ width: '15%' }}></div>
-                    </div>
-                  </div>
-                  <div>
-                    <div className="flex justify-between mb-1 text-sm">
-                      <span>Refunds</span>
-                      <span>10%</span>
-                    </div>
-                    <div className="w-full bg-muted rounded-full h-2">
-                      <div className="bg-halvi-royal h-2 rounded-full" style={{ width: '10%' }}></div>
-                    </div>
-                  </div>
-                  <div>
-                    <div className="flex justify-between mb-1 text-sm">
-                      <span>Development</span>
-                      <span>7%</span>
-                    </div>
-                    <div className="w-full bg-muted rounded-full h-2">
-                      <div className="bg-green-500 h-2 rounded-full" style={{ width: '7%' }}></div>
-                    </div>
-                  </div>
-                </div>
-              </Card>
-            </div>
-          </TabsContent>
-        </Tabs>
-      </Card>
+                  </CardContent>
+                </Card>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+      </Tabs>
     </DashboardLayout>
   );
 };

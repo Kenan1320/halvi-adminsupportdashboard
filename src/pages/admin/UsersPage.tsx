@@ -3,326 +3,503 @@ import React, { useState } from 'react';
 import DashboardLayout from '@/components/layout/DashboardLayout';
 import PageHeader from '@/components/admin/PageHeader';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import SmartTable from '@/components/admin/SmartTable';
-import StatisticsCard from '@/components/admin/StatisticsCard';
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
 import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { 
-  Users, 
+  Users as UsersIcon, 
+  User as UserIcon, 
+  Search, 
+  Filter, 
+  Plus,
+  ShoppingCart,
+  ArrowUpRight,
   UserPlus,
-  User, 
-  ShoppingBag, 
-  Store, 
-  Headset, 
-  Shield,
-  Search,
-  UserCheck,
-  Tag,
-  Lock
+  Mail,
+  MessageSquare as MessageIcon
 } from 'lucide-react';
 
 // Mock data
-const mockUsers = [
-  { id: 'U001', name: 'Ahmed Khan', email: 'ahmed@example.com', type: 'Customer', orders: 24, joined: '2022-08-15', status: 'Active' },
-  { id: 'U002', name: 'Fatima Ali', email: 'fatima@example.com', type: 'Customer', orders: 67, joined: '2022-05-22', status: 'Active' },
-  { id: 'U003', name: 'Mohammed Patel', email: 'mohammed@example.com', type: 'Business Owner', orders: 0, joined: '2022-11-03', status: 'Active' },
-  { id: 'U004', name: 'Aisha Hussein', email: 'aisha@example.com', type: 'Support Agent', orders: 0, joined: '2023-01-12', status: 'Active' },
-  { id: 'U005', name: 'Samir Rahman', email: 'samir@example.com', type: 'Customer', orders: 3, joined: '2023-02-28', status: 'Suspended' },
+const usersList = [
+  { 
+    id: 'USR-10492', 
+    name: 'Ahmed Al-Farsi', 
+    email: 'ahmed.alfarsi@example.com',
+    phone: '+44 7700 900123',
+    joinDate: 'May 12, 2022',
+    lastActive: '2 hours ago',
+    orders: 24,
+    spentTotal: '$1,245.60',
+    status: 'active',
+    avatar: '/placeholder.svg',
+    type: 'customer',
+    tags: ['frequent buyer', 'halal food enthusiast']
+  },
+  { 
+    id: 'USR-10387', 
+    name: 'Fatima Zahra', 
+    email: 'fatima.zahra@example.com',
+    phone: '+44 7700 900456',
+    joinDate: 'January 3, 2022',
+    lastActive: '5 days ago',
+    orders: 16,
+    spentTotal: '$824.30',
+    status: 'active',
+    avatar: '/placeholder.svg',
+    type: 'customer',
+    tags: ['vegetarian', 'subscription user']
+  },
+  { 
+    id: 'USR-10298', 
+    name: 'Mohammed Nur', 
+    email: 'mohammed.nur@example.com',
+    phone: '+44 7700 900789',
+    joinDate: 'March 22, 2022',
+    lastActive: '1 day ago',
+    orders: 32,
+    spentTotal: '$1,956.45',
+    status: 'active',
+    avatar: '/placeholder.svg',
+    type: 'customer',
+    tags: ['frequent buyer', 'premium member']
+  },
+  { 
+    id: 'USR-10156', 
+    name: 'Layla Rahman', 
+    email: 'layla.rahman@example.com',
+    phone: '+44 7700 900234',
+    joinDate: 'June 5, 2022',
+    lastActive: '12 hours ago',
+    orders: 8,
+    spentTotal: '$356.75',
+    status: 'active',
+    avatar: '/placeholder.svg',
+    type: 'customer',
+    tags: ['new user']
+  },
+  { 
+    id: 'USR-9987', 
+    name: 'Omar Khan', 
+    email: 'omar.khan@example.com',
+    phone: '+44 7700 900567',
+    joinDate: 'February 18, 2022',
+    lastActive: '3 weeks ago',
+    orders: 5,
+    spentTotal: '$143.20',
+    status: 'inactive',
+    avatar: '/placeholder.svg',
+    type: 'customer',
+    tags: ['inactive']
+  },
+  { 
+    id: 'USR-6024', 
+    name: 'Aisha Mahmood', 
+    email: 'aisha.mahmood@example.com',
+    phone: '+44 7700 900890',
+    joinDate: 'April 10, 2021',
+    lastActive: 'online now',
+    orders: 67,
+    spentTotal: '$3,421.80',
+    status: 'active',
+    avatar: '/placeholder.svg',
+    type: 'customer',
+    tags: ['VIP customer', 'frequent buyer']
+  },
+  { 
+    id: 'ADM-1024', 
+    name: 'Zainab Malik', 
+    email: 'zainab.admin@halvi.co',
+    phone: '+44 7700 900111',
+    joinDate: 'January 5, 2021',
+    lastActive: 'online now',
+    orders: 0,
+    spentTotal: '$0.00',
+    status: 'active',
+    avatar: '/placeholder.svg',
+    type: 'admin',
+    tags: ['super admin']
+  },
+  { 
+    id: 'SUP-2048', 
+    name: 'Yusuf Ahmed', 
+    email: 'yusuf.support@halvi.co',
+    phone: '+44 7700 900222',
+    joinDate: 'March 15, 2021',
+    lastActive: '30 minutes ago',
+    orders: 0,
+    spentTotal: '$0.00',
+    status: 'active',
+    avatar: '/placeholder.svg',
+    type: 'support',
+    tags: ['tier 2 support']
+  },
 ];
 
-const userSegments = [
-  { id: 'SEG001', name: 'Frequent Buyers', count: 215, criteria: 'More than 10 orders', actions: 'Loyalty rewards, Early access to sales' },
-  { id: 'SEG002', name: 'New Customers', count: 187, criteria: 'Joined in last 30 days', actions: 'Welcome offers, Onboarding emails' },
-  { id: 'SEG003', name: 'High Spenders', count: 78, criteria: 'Average order value > $100', actions: 'Premium promotions, VIP support' },
-  { id: 'SEG004', name: 'At-Risk', count: 43, criteria: 'No purchase in 60+ days', actions: 'Re-engagement campaigns, Surveys' },
+const shopsUsers = [
+  { 
+    id: 'SHP-342', 
+    name: 'Baraka Halal Meats', 
+    ownerName: 'Hassan Abdullah',
+    email: 'contact@barakahalal.com',
+    phone: '+44 7700 900456',
+    joinDate: 'Jan 5, 2021',
+    lastActive: '3 hours ago',
+    orders: 1245,
+    revenue: '$85,420.50',
+    status: 'active',
+    avatar: '/placeholder.svg',
+    type: 'shop',
+    category: 'Butcher',
+    tags: ['verified', 'high performer']
+  },
+  { 
+    id: 'SHP-287', 
+    name: 'Medina Spices', 
+    ownerName: 'Fatima Zaidi',
+    email: 'info@medinaspices.com',
+    phone: '+44 7700 900789',
+    joinDate: 'Feb 12, 2021',
+    lastActive: '1 day ago',
+    orders: 892,
+    revenue: '$42,150.25',
+    status: 'active',
+    avatar: '/placeholder.svg',
+    type: 'shop',
+    category: 'Grocery',
+    tags: ['verified']
+  },
+  { 
+    id: 'SHP-209', 
+    name: 'Halal Sweet Delights', 
+    ownerName: 'Ahmed Malik',
+    email: 'hello@halalsweets.com',
+    phone: '+44 7700 900123',
+    joinDate: 'Apr 8, 2021',
+    lastActive: '5 hours ago',
+    orders: 734,
+    revenue: '$36,780.15',
+    status: 'active',
+    avatar: '/placeholder.svg',
+    type: 'shop',
+    category: 'Confectionery',
+    tags: ['verified', 'trending']
+  },
+  { 
+    id: 'SHP-176', 
+    name: 'Al-Madina Bakery', 
+    ownerName: 'Zainab Hassan',
+    email: 'orders@madinabakery.com',
+    phone: '+44 7700 900456',
+    joinDate: 'Mar 22, 2021',
+    lastActive: 'online now',
+    orders: 982,
+    revenue: '$52,340.60',
+    status: 'active',
+    avatar: '/placeholder.svg',
+    type: 'shop',
+    category: 'Bakery',
+    tags: ['verified', 'high performer']
+  },
+  { 
+    id: 'SHP-123', 
+    name: 'Sunnah Foods', 
+    ownerName: 'Omar Farooq',
+    email: 'omar@sunnahfoods.com',
+    phone: '+44 7700 900789',
+    joinDate: 'May 15, 2021',
+    lastActive: '2 days ago',
+    orders: 563,
+    revenue: '$29,450.80',
+    status: 'suspended',
+    avatar: '/placeholder.svg',
+    type: 'shop',
+    category: 'Restaurant',
+    tags: ['under review']
+  }
 ];
 
 const UsersPage = () => {
-  const [activeTab, setActiveTab] = useState('directory');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [userTypeFilter, setUserTypeFilter] = useState('all');
+  const [userStatusFilter, setUserStatusFilter] = useState('all');
 
-  const handleRowAction = (action: string, rowData: any) => {
-    console.log(`Action ${action} on:`, rowData);
-    // Implementation for different actions
-  };
+  const allUsers = [...usersList, ...shopsUsers];
+  
+  const filteredUsers = allUsers.filter(user => 
+    (userTypeFilter === 'all' || user.type === userTypeFilter) && 
+    (userStatusFilter === 'all' || user.status === userStatusFilter) &&
+    (user.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
+     user.id.toLowerCase().includes(searchQuery.toLowerCase()) ||
+     (user.email && user.email.toLowerCase().includes(searchQuery.toLowerCase())) ||
+     (user.tags && user.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()))))
+  );
 
   return (
-    <DashboardLayout title="Users Management">
+    <DashboardLayout title="User Management">
       <PageHeader 
-        title="Users Management" 
-        description="Manage customers, business owners, and platform users"
+        title="User Management" 
+        description="Manage all platform users, customers, shops, admins, and support staff"
         actions={
-          <Button>
-            <UserPlus size={16} className="mr-2" />
-            Add User
-          </Button>
+          <div className="flex items-center gap-2">
+            <Button variant="outline" size="sm" className="h-8 gap-1">
+              <Filter size={14} />
+              Filters
+            </Button>
+            <Button size="sm" className="h-8 gap-1">
+              <Plus size={14} />
+              Add User
+            </Button>
+          </div>
         }
       />
 
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-        <StatisticsCard 
-          title="Total Users" 
-          value="12,847" 
-          change={{ value: 8.3, isPositive: true }} 
-          icon={<Users size={20} />}
-        />
-        <StatisticsCard 
-          title="Customers" 
-          value="11,522" 
-          change={{ value: 9.1, isPositive: true }} 
-          icon={<User size={20} />}
-        />
-        <StatisticsCard 
-          title="Business Owners" 
-          value="1,247" 
-          change={{ value: 4.5, isPositive: true }} 
-          icon={<Store size={20} />}
-        />
-        <StatisticsCard 
-          title="Support Agents" 
-          value="78" 
-          icon={<Headset size={20} />}
-        />
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <Card>
+          <CardContent className="pt-6">
+            <div className="flex items-start justify-between">
+              <div>
+                <p className="text-sm font-medium text-muted-foreground">Total Users</p>
+                <p className="text-2xl font-bold mt-1">32,659</p>
+              </div>
+              <div className="rounded-lg p-2 bg-primary/10">
+                <UsersIcon className="h-5 w-5 text-primary" />
+              </div>
+            </div>
+            <div className="mt-4 flex items-center text-xs">
+              <div className="text-green-500 flex items-center">
+                <ArrowUpRight className="h-3 w-3 mr-1" />
+                12.5%
+              </div>
+              <span className="ml-1 text-muted-foreground">from last month</span>
+            </div>
+          </CardContent>
+        </Card>
+        
+        <Card>
+          <CardContent className="pt-6">
+            <div className="flex items-start justify-between">
+              <div>
+                <p className="text-sm font-medium text-muted-foreground">New Users (MTD)</p>
+                <p className="text-2xl font-bold mt-1">2,841</p>
+              </div>
+              <div className="rounded-lg p-2 bg-blue-500/10">
+                <UserPlus className="h-5 w-5 text-blue-500" />
+              </div>
+            </div>
+            <div className="mt-4 flex items-center text-xs">
+              <div className="text-green-500 flex items-center">
+                <ArrowUpRight className="h-3 w-3 mr-1" />
+                8.3%
+              </div>
+              <span className="ml-1 text-muted-foreground">vs last month</span>
+            </div>
+          </CardContent>
+        </Card>
+        
+        <Card>
+          <CardContent className="pt-6">
+            <div className="flex items-start justify-between">
+              <div>
+                <p className="text-sm font-medium text-muted-foreground">Active Users</p>
+                <p className="text-2xl font-bold mt-1">24,827</p>
+              </div>
+              <div className="rounded-lg p-2 bg-green-500/10">
+                <UserIcon className="h-5 w-5 text-green-500" />
+              </div>
+            </div>
+            <div className="mt-4 flex items-center text-xs">
+              <div className="text-green-500 flex items-center">
+                <ArrowUpRight className="h-3 w-3 mr-1" />
+                3.4%
+              </div>
+              <span className="ml-1 text-muted-foreground">vs last month</span>
+            </div>
+          </CardContent>
+        </Card>
       </div>
 
-      <Card className="mb-6">
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="w-full justify-start border-b rounded-none px-4 h-auto bg-transparent">
-            <TabsTrigger value="directory" className="py-3 px-4">User Directory</TabsTrigger>
-            <TabsTrigger value="profiles" className="py-3 px-4">User Profiles</TabsTrigger>
-            <TabsTrigger value="segments" className="py-3 px-4">User Segmentation</TabsTrigger>
-            <TabsTrigger value="management" className="py-3 px-4">Management Tools</TabsTrigger>
-          </TabsList>
-
-          <TabsContent value="directory" className="p-0 mt-0">
-            <div className="p-4 border-b flex items-center gap-4">
-              <div className="flex-1">
-                <div className="relative">
-                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                  <input
-                    type="text"
-                    placeholder="Search users by name, email, ID..."
-                    className="h-10 w-full rounded-md border border-input bg-background px-10 text-sm focus:outline-none focus:ring-1 focus:ring-halvi-accent"
-                  />
-                </div>
-              </div>
-              <div className="flex items-center gap-2">
-                <Button variant="outline" size="sm">
-                  Filter
-                </Button>
-                <Button variant="outline" size="sm">
-                  Export
-                </Button>
-              </div>
+      <Card>
+        <CardHeader className="pb-2">
+          <CardTitle className="text-lg font-medium">User Directory</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
+            <div className="relative w-full sm:w-auto sm:min-w-[300px]">
+              <Search className="absolute top-1/2 transform -translate-y-1/2 left-3 h-4 w-4 text-muted-foreground pointer-events-none" />
+              <Input 
+                placeholder="Search users..." 
+                className="pl-9" 
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
             </div>
-            <SmartTable
-              columns={[
-                { key: 'id', title: 'User ID', sortable: true },
-                { key: 'name', title: 'Name', sortable: true },
-                { key: 'email', title: 'Email', sortable: true },
-                { key: 'type', title: 'User Type', sortable: true },
-                { key: 'orders', title: 'Orders', sortable: true },
-                { key: 'joined', title: 'Join Date', sortable: true },
-                { key: 'status', title: 'Status', sortable: true },
-              ]}
-              data={mockUsers}
-              filters={['All', 'Customers', 'Business Owners', 'Support Agents', 'Admins']}
-              rowActions={['View Profile', 'Edit', 'Suspend', 'Delete', 'Reset Password']}
-              onRowAction={handleRowAction}
-              pagination={{
-                page: 1,
-                pageSize: 10,
-                total: 12847,
-                onChange: (page) => console.log('Changed to page', page)
-              }}
-            />
-          </TabsContent>
-
-          <TabsContent value="profiles" className="p-4 mt-0">
-            <div className="flex flex-col items-center justify-center text-center p-8">
-              <div className="w-full max-w-3xl">
-                <h3 className="text-lg font-medium mb-4">User Profile Information</h3>
-                <p className="text-sm text-muted-foreground mb-6">Search for a user or select from the directory to view detailed profile</p>
-                
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-                  <Card className="p-4 flex flex-col items-center">
-                    <div className="h-16 w-16 rounded-full bg-muted flex items-center justify-center mb-3">
-                      <User size={28} className="text-muted-foreground" />
-                    </div>
-                    <h3 className="font-medium">Profile Info</h3>
-                    <p className="text-xs text-muted-foreground mt-1">Contact details and preferences</p>
-                  </Card>
-                  
-                  <Card className="p-4 flex flex-col items-center">
-                    <div className="h-16 w-16 rounded-full bg-muted flex items-center justify-center mb-3">
-                      <ShoppingBag size={28} className="text-muted-foreground" />
-                    </div>
-                    <h3 className="font-medium">Order History</h3>
-                    <p className="text-xs text-muted-foreground mt-1">Past purchases and returns</p>
-                  </Card>
-                  
-                  <Card className="p-4 flex flex-col items-center">
-                    <div className="h-16 w-16 rounded-full bg-muted flex items-center justify-center mb-3">
-                      <MessageSquare size={28} className="text-muted-foreground" />
-                    </div>
-                    <h3 className="font-medium">Communication</h3>
-                    <p className="text-xs text-muted-foreground mt-1">Support tickets and messages</p>
-                  </Card>
-                </div>
-                
-                <Button className="mt-4">Search User</Button>
-              </div>
+            <div className="flex items-center gap-2 overflow-x-auto pb-2 w-full sm:w-auto">
+              <Button variant={userTypeFilter === 'all' ? 'default' : 'outline'} size="sm" onClick={() => setUserTypeFilter('all')}>
+                All Users
+              </Button>
+              <Button variant={userTypeFilter === 'customer' ? 'default' : 'outline'} size="sm" onClick={() => setUserTypeFilter('customer')}>
+                Customers
+              </Button>
+              <Button variant={userTypeFilter === 'shop' ? 'default' : 'outline'} size="sm" onClick={() => setUserTypeFilter('shop')}>
+                Shops
+              </Button>
+              <Button variant={userTypeFilter === 'admin' ? 'default' : 'outline'} size="sm" onClick={() => setUserTypeFilter('admin')}>
+                Admins
+              </Button>
+              <Button variant={userTypeFilter === 'support' ? 'default' : 'outline'} size="sm" onClick={() => setUserTypeFilter('support')}>
+                Support
+              </Button>
             </div>
-          </TabsContent>
-
-          <TabsContent value="segments" className="p-0 mt-0">
-            <SmartTable
-              title="User Segments"
-              subtitle="Automatically generated user groups"
-              columns={[
-                { key: 'id', title: 'Segment ID', sortable: true },
-                { key: 'name', title: 'Segment Name', sortable: true },
-                { key: 'count', title: 'User Count', sortable: true },
-                { key: 'criteria', title: 'Criteria', sortable: true },
-                { key: 'actions', title: 'Recommended Actions', sortable: false },
-              ]}
-              data={userSegments}
-              rowActions={['View Users', 'Edit Segment', 'Create Campaign', 'Export List']}
-              onRowAction={handleRowAction}
-              pagination={{
-                page: 1,
-                pageSize: 10,
-                total: 8,
-                onChange: (page) => console.log('Changed to page', page)
-              }}
-              actions={
-                <Button size="sm">
-                  <Tag size={16} className="mr-2" />
-                  Create Segment
-                </Button>
-              }
-            />
+          </div>
+          
+          <div className="flex flex-wrap gap-2 mb-6">
+            <Badge variant={userStatusFilter === 'all' ? 'default' : 'outline'} className="cursor-pointer" onClick={() => setUserStatusFilter('all')}>
+              All Status
+            </Badge>
+            <Badge variant={userStatusFilter === 'active' ? 'default' : 'outline'} className="cursor-pointer" onClick={() => setUserStatusFilter('active')}>
+              Active
+            </Badge>
+            <Badge variant={userStatusFilter === 'inactive' ? 'default' : 'outline'} className="cursor-pointer" onClick={() => setUserStatusFilter('inactive')}>
+              Inactive
+            </Badge>
+            <Badge variant={userStatusFilter === 'suspended' ? 'default' : 'outline'} className="cursor-pointer" onClick={() => setUserStatusFilter('suspended')}>
+              Suspended
+            </Badge>
+          </div>
+          
+          <div className="overflow-auto">
+            <table className="w-full border-collapse">
+              <thead>
+                <tr className="border-b">
+                  <th className="text-left py-3 px-4 font-medium text-muted-foreground">User</th>
+                  <th className="text-left py-3 px-4 font-medium text-muted-foreground">Type</th>
+                  <th className="text-left py-3 px-4 font-medium text-muted-foreground">Contact</th>
+                  <th className="text-left py-3 px-4 font-medium text-muted-foreground">Joined</th>
+                  <th className="text-left py-3 px-4 font-medium text-muted-foreground">Last Active</th>
+                  <th className="text-left py-3 px-4 font-medium text-muted-foreground">Orders/Revenue</th>
+                  <th className="text-left py-3 px-4 font-medium text-muted-foreground">Status</th>
+                  <th className="text-left py-3 px-4 font-medium text-muted-foreground">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filteredUsers.map((user) => (
+                  <tr key={user.id} className="border-b hover:bg-muted/50 transition-colors">
+                    <td className="py-3 px-4">
+                      <div className="flex items-center gap-3">
+                        <Avatar className="h-8 w-8">
+                          <AvatarImage src={user.avatar} alt={user.name} />
+                          <AvatarFallback className={`
+                            ${user.type === 'customer' ? 'bg-blue-100 text-blue-500' : ''}
+                            ${user.type === 'shop' ? 'bg-amber-100 text-amber-500' : ''}
+                            ${user.type === 'admin' ? 'bg-purple-100 text-purple-500' : ''}
+                            ${user.type === 'support' ? 'bg-green-100 text-green-500' : ''}
+                          `}>
+                            {user.name.split(' ').map(n => n[0]).join('')}
+                          </AvatarFallback>
+                        </Avatar>
+                        <div>
+                          <p className="font-medium">{user.name}</p>
+                          <p className="text-xs text-muted-foreground">{user.id}</p>
+                        </div>
+                      </div>
+                    </td>
+                    <td className="py-3 px-4">
+                      <Badge variant="outline" className={`
+                        ${user.type === 'customer' ? 'bg-blue-50 text-blue-600 border-blue-200' : ''}
+                        ${user.type === 'shop' ? 'bg-amber-50 text-amber-600 border-amber-200' : ''}
+                        ${user.type === 'admin' ? 'bg-purple-50 text-purple-600 border-purple-200' : ''}
+                        ${user.type === 'support' ? 'bg-green-50 text-green-600 border-green-200' : ''}
+                      `}>
+                        {user.type === 'customer' && 'Customer'}
+                        {user.type === 'shop' && (user.category || 'Shop')}
+                        {user.type === 'admin' && 'Admin'}
+                        {user.type === 'support' && 'Support'}
+                      </Badge>
+                      <div className="flex flex-wrap gap-1 mt-1">
+                        {user.tags && user.tags.map((tag, index) => (
+                          <Badge key={index} variant="outline" className="text-xs py-0 px-1 h-4">
+                            {tag}
+                          </Badge>
+                        ))}
+                      </div>
+                    </td>
+                    <td className="py-3 px-4">
+                      <div className="space-y-1">
+                        <div className="flex items-center gap-1 text-xs">
+                          <Mail className="h-3 w-3 text-muted-foreground" />
+                          <span>{user.email}</span>
+                        </div>
+                        <div className="flex items-center gap-1 text-xs">
+                          <Phone className="h-3 w-3 text-muted-foreground" />
+                          <span>{user.phone}</span>
+                        </div>
+                      </div>
+                    </td>
+                    <td className="py-3 px-4">
+                      <p className="text-sm">{user.joinDate}</p>
+                    </td>
+                    <td className="py-3 px-4">
+                      <Badge variant={user.lastActive === 'online now' ? 'default' : 'outline'} className="font-normal">
+                        {user.lastActive}
+                      </Badge>
+                    </td>
+                    <td className="py-3 px-4">
+                      <div className="space-y-1">
+                        <div className="flex items-center gap-1">
+                          <ShoppingCart className="h-3 w-3 text-muted-foreground" />
+                          <span className="text-sm">{user.orders} orders</span>
+                        </div>
+                        <p className="text-sm font-medium">
+                          {user.spentTotal || user.revenue}
+                        </p>
+                      </div>
+                    </td>
+                    <td className="py-3 px-4">
+                      <Badge variant={
+                        user.status === 'active' ? 'success' : 
+                        user.status === 'inactive' ? 'secondary' : 
+                        'destructive'
+                      }>
+                        {user.status}
+                      </Badge>
+                    </td>
+                    <td className="py-3 px-4">
+                      <div className="flex items-center gap-2">
+                        <Button variant="outline" size="sm" className="h-8 w-8 p-0">
+                          <UserIcon className="h-4 w-4" />
+                        </Button>
+                        <Button variant="outline" size="sm" className="h-8 w-8 p-0">
+                          <MessageIcon className="h-4 w-4" />
+                        </Button>
+                        <Button variant="outline" size="sm" className="h-8">
+                          More
+                        </Button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
             
-            <div className="p-4">
-              <Card className="p-4 border-l-4 border-l-purple-400">
-                <div className="flex items-start gap-3">
-                  <Tag size={20} className="text-purple-500 mt-0.5" />
-                  <div>
-                    <h3 className="font-medium">Automatic Segmentation</h3>
-                    <p className="text-sm text-muted-foreground mt-1">System automatically segments users based on behavior patterns for more targeted engagement.</p>
-                  </div>
-                </div>
-              </Card>
-            </div>
-          </TabsContent>
-
-          <TabsContent value="management" className="p-4 mt-0">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-              <Card className="p-4">
-                <div className="flex items-center gap-3 mb-3">
-                  <div className="h-10 w-10 rounded-full bg-muted flex items-center justify-center">
-                    <UserCheck size={20} className="text-muted-foreground" />
-                  </div>
-                  <div>
-                    <h3 className="font-medium">Bulk User Approval</h3>
-                    <p className="text-xs text-muted-foreground">Verify multiple users at once</p>
-                  </div>
-                </div>
-                <Button size="sm" className="w-full mt-2">
-                  Access Tool
-                </Button>
-              </Card>
-              
-              <Card className="p-4">
-                <div className="flex items-center gap-3 mb-3">
-                  <div className="h-10 w-10 rounded-full bg-muted flex items-center justify-center">
-                    <Lock size={20} className="text-muted-foreground" />
-                  </div>
-                  <div>
-                    <h3 className="font-medium">Password Management</h3>
-                    <p className="text-xs text-muted-foreground">Reset passwords and manage security</p>
-                  </div>
-                </div>
-                <Button size="sm" className="w-full mt-2">
-                  Access Tool
-                </Button>
-              </Card>
-              
-              <Card className="p-4">
-                <div className="flex items-center gap-3 mb-3">
-                  <div className="h-10 w-10 rounded-full bg-muted flex items-center justify-center">
-                    <Shield size={20} className="text-muted-foreground" />
-                  </div>
-                  <div>
-                    <h3 className="font-medium">Permissions Manager</h3>
-                    <p className="text-xs text-muted-foreground">Assign user roles and permissions</p>
-                  </div>
-                </div>
-                <Button size="sm" className="w-full mt-2">
-                  Access Tool
-                </Button>
-              </Card>
-            </div>
-            
-            <Card className="p-4">
-              <h3 className="text-lg font-medium mb-4">Global User Settings</h3>
-              <div className="space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <label className="text-sm font-medium mb-1 block">Default User Role</label>
-                    <select className="w-full h-9 rounded-md border border-input bg-background px-3 text-sm focus:outline-none focus:ring-1 focus:ring-halvi-accent">
-                      <option>Customer</option>
-                      <option>Business Owner</option>
-                      <option>Support Agent</option>
-                      <option>Admin</option>
-                    </select>
-                  </div>
-                  
-                  <div>
-                    <label className="text-sm font-medium mb-1 block">Password Policy</label>
-                    <select className="w-full h-9 rounded-md border border-input bg-background px-3 text-sm focus:outline-none focus:ring-1 focus:ring-halvi-accent">
-                      <option>Standard Security</option>
-                      <option>High Security</option>
-                      <option>Maximum Security</option>
-                    </select>
-                  </div>
-                </div>
-                
-                <div>
-                  <label className="text-sm font-medium mb-1 block">Account Verification</label>
-                  <div className="flex items-center gap-4">
-                    <label className="flex items-center gap-2 text-sm">
-                      <input type="radio" name="verification" defaultChecked />
-                      Email Verification
-                    </label>
-                    <label className="flex items-center gap-2 text-sm">
-                      <input type="radio" name="verification" />
-                      Phone Verification
-                    </label>
-                    <label className="flex items-center gap-2 text-sm">
-                      <input type="radio" name="verification" />
-                      Both
-                    </label>
-                  </div>
-                </div>
-                
-                <div>
-                  <label className="flex items-center gap-2 text-sm">
-                    <input type="checkbox" defaultChecked />
-                    Auto-suspend accounts with suspicious activity
-                  </label>
-                </div>
-                
-                <div>
-                  <label className="flex items-center gap-2 text-sm">
-                    <input type="checkbox" defaultChecked />
-                    Require 2FA for admin accounts
-                  </label>
-                </div>
+            {filteredUsers.length === 0 && (
+              <div className="text-center py-12">
+                <UsersIcon className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
+                <h3 className="text-lg font-medium">No users found</h3>
+                <p className="text-muted-foreground">Try adjusting your filters or search query</p>
               </div>
-              <Button className="mt-4">Save Settings</Button>
-            </Card>
-          </TabsContent>
-        </Tabs>
+            )}
+          </div>
+          
+          <div className="flex items-center justify-between mt-4">
+            <p className="text-sm text-muted-foreground">Showing {filteredUsers.length} of {allUsers.length} users</p>
+            <div className="flex items-center gap-2">
+              <Button variant="outline" size="sm" disabled>Previous</Button>
+              <Button variant="outline" size="sm">Next</Button>
+            </div>
+          </div>
+        </CardContent>
       </Card>
     </DashboardLayout>
   );
