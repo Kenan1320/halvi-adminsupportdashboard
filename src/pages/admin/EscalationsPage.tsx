@@ -24,7 +24,8 @@ import {
   MessageSquare,
   ArrowRight,
   FileText as FileTextIcon,
-  Download as DownloadIcon
+  Download as DownloadIcon,
+  Send
 } from 'lucide-react';
 
 const escalationsList = [
@@ -163,11 +164,11 @@ const EscalationsPage = () => {
       case 'urgent':
         return 'destructive';
       case 'in-progress':
-        return 'blue';
+        return 'secondary';
       case 'pending':
-        return 'yellow';
+        return 'outline';
       case 'resolved':
-        return 'green';
+        return 'default';
       default:
         return 'default';
     }
@@ -322,7 +323,7 @@ const EscalationsPage = () => {
                   >
                     <CardContent className="p-4">
                       <div className="flex items-start gap-3">
-                        <Badge variant={getStatusColor(escalation.status)} className="mt-0.5">
+                        <Badge variant="outline" className={`mt-0.5 ${getStatusColor(escalation.status) === 'destructive' ? 'text-destructive border-destructive' : ''}`}>
                           {escalation.status}
                         </Badge>
                         <div className="flex-1 min-w-0">
@@ -409,7 +410,7 @@ const EscalationsPage = () => {
                       <div className="space-y-3">
                         <div>
                           <p className="text-sm text-muted-foreground">Status</p>
-                          <Badge variant={getStatusColor(selectedEscalation.status)} className="mt-1">
+                          <Badge variant="outline" className={`mt-1 ${getStatusColor(selectedEscalation.status) === 'destructive' ? 'text-destructive border-destructive' : ''}`}>
                             {selectedEscalation.status}
                           </Badge>
                         </div>

@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import DashboardLayout from '@/components/layout/DashboardLayout';
 import PageHeader from '@/components/admin/PageHeader';
@@ -362,7 +361,7 @@ const WalletPage = () => {
                           </div>
                         </td>
                         <td className="py-3 px-4">
-                          <Badge variant="outline" className={`
+                          <Badge variant="default" className={`
                             ${transaction.type === 'payout' ? 'bg-blue-50 text-blue-600 border-blue-200' : ''}
                             ${transaction.type === 'commission' ? 'bg-green-50 text-green-600 border-green-200' : ''}
                             ${transaction.type === 'refund' ? 'bg-amber-50 text-amber-600 border-amber-200' : ''}

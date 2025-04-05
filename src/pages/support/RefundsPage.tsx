@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import DashboardLayout from '@/components/layout/DashboardLayout';
 import PageHeader from '@/components/admin/PageHeader';
@@ -290,7 +289,7 @@ const RefundsPage = () => {
                   >
                     <CardContent className="p-4">
                       <div className="flex items-start gap-3">
-                        <Badge variant={getStatusColor(refund.status)} className="mt-0.5">
+                        <Badge variant="outline" className="mt-0.5 text-blue-500 border-blue-500">
                           {refund.status}
                         </Badge>
                         <div className="flex-1 min-w-0">

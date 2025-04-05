@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import DashboardLayout from '@/components/layout/DashboardLayout';
 import PageHeader from '@/components/admin/PageHeader';
@@ -26,7 +25,9 @@ import {
   Download,
   CheckCircle,
   BarChart3,
-  PieChart as PieChartIcon
+  PieChart as PieChartIcon,
+  ShoppingCart,
+  Users
 } from 'lucide-react';
 
 // Mock data
