@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import DashboardLayout from '@/components/layout/DashboardLayout';
 import PageHeader from '@/components/admin/PageHeader';
@@ -28,7 +27,6 @@ import {
   Download as DownloadIcon
 } from 'lucide-react';
 
-// Mock data
 const escalationsList = [
   { 
     id: 'ESC-2023-001', 
@@ -138,7 +136,7 @@ const escalationDetails = {
     { date: 'June 17, 2023 - 14:30', event: 'Financial team verified duplicate charge', user: 'Amina L.' }
   ],
   notes: [
-    { date: 'June 17, 2023 - 10:05', content: 'Customer was very polite but frustrated about the double charge. I've verified in our payment system that there were indeed two charges processed within 1 minute of each other. This appears to be a system error rather than customer error.', author: 'Fatima K.' },
+    { date: 'June 17, 2023 - 10:05', content: "Customer was very polite but frustrated about the double charge. I've verified in our payment system that there were indeed two charges processed within 1 minute of each other. This appears to be a system error rather than customer error.", author: 'Fatima K.' },
     { date: 'June 17, 2023 - 14:30', content: 'Confirmed duplicate charge in payment gateway logs. This appears to be related to the intermittent gateway timeout issues we experienced on June 15. Recommending immediate refund of the duplicate charge.', author: 'Amina L.' }
   ],
   actions: [

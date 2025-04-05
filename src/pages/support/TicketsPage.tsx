@@ -117,7 +117,7 @@ const ticketsList = [
 const ticketDetails = {
   id: 'TKT-2023-1045',
   subject: 'Order not received but marked as delivered',
-  description: 'I placed an order (#ORD-45982) for halal meat 3 days ago. The app shows it was delivered yesterday, but I never received it. I've checked with neighbors and there was no delivery attempt. I need help resolving this as I've already been charged.',
+  description: "I placed an order (#ORD-45982) for halal meat 3 days ago. The app shows it was delivered yesterday, but I never received it. I've checked with neighbors and there was no delivery attempt. I need help resolving this as I've already been charged.",
   customer: { 
     id: 'CUST-7892',
     name: 'Ahmed Al-Farsi', 
@@ -163,7 +163,7 @@ const ticketDetails = {
       id: 1,
       sender: 'customer',
       senderName: 'Ahmed Al-Farsi',
-      content: 'I\'ve been waiting for my order for 3 days now, but it\'s marked as delivered in the app. I never received anything and I\'ve checked with my neighbors. Can you help me locate my order or get a refund?',
+      content: "I've been waiting for my order for 3 days now, but it's marked as delivered in the app. I never received anything and I've checked with my neighbors. Can you help me locate my order or get a refund?",
       time: 'June 15, 2023 - 14:32',
       attachment: null
     },
@@ -171,7 +171,7 @@ const ticketDetails = {
       id: 2,
       sender: 'agent',
       senderName: 'Fatima K.',
-      content: 'I\'m sorry to hear about this issue, Ahmed. I understand how frustrating it must be. I\'ll contact the shop immediately to check on your order status. Could you please confirm your delivery address for me?',
+      content: "I'm sorry to hear about this issue, Ahmed. I understand how frustrating it must be. I'll contact the shop immediately to check on your order status. Could you please confirm your delivery address for me?",
       time: 'June 15, 2023 - 15:00',
       attachment: null
     },
@@ -187,7 +187,7 @@ const ticketDetails = {
       id: 4,
       sender: 'agent',
       senderName: 'Fatima K.',
-      content: 'Thank you for confirming. I\'ve just spoken with Baraka Halal Meats, and they confirmed your order was dispatched yesterday for delivery. According to the delivery service, it was marked as delivered at 14:15 yesterday. They'll check with the driver for more information. In the meantime, I\'ve added a note to your order about this issue.',
+      content: "Thank you for confirming. I've just spoken with Baraka Halal Meats, and they confirmed your order was dispatched yesterday for delivery. According to the delivery service, it was marked as delivered at 14:15 yesterday. They'll check with the driver for more information. In the meantime, I've added a note to your order about this issue.",
       time: 'June 15, 2023 - 16:35',
       attachment: null
     },
@@ -195,7 +195,7 @@ const ticketDetails = {
       id: 5,
       sender: 'customer',
       senderName: 'Ahmed Al-Farsi',
-      content: 'It\'s now two days since my order was supposedly delivered, and I still haven\'t received anything. I\'ve checked everywhere around my building. Could we please proceed with a refund or replacement? I really needed these items.',
+      content: "It's now two days since my order was supposedly delivered, and I still haven't received anything. I've checked everywhere around my building. Could we please proceed with a refund or replacement? I really needed these items.",
       time: 'June 17, 2023 - 09:12',
       attachment: null
     }
