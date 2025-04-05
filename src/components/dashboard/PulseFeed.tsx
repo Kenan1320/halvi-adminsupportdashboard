@@ -2,14 +2,7 @@
 import React from 'react';
 import { Clock } from 'lucide-react';
 import { cn } from '@/lib/utils';
-
-interface FeedItem {
-  id: string;
-  type: 'shop' | 'order' | 'product' | 'user';
-  message: string;
-  time: string;
-  status?: 'pending' | 'approved' | 'rejected' | 'flagged';
-}
+import { FeedItem } from '@/types/dashboard';
 
 interface PulseFeedProps {
   items: FeedItem[];
@@ -23,6 +16,14 @@ const getStatusStyles = (status?: string) => {
       return 'bg-halvi-danger/10 text-halvi-danger';
     case 'flagged':
       return 'bg-halvi-warning/10 text-halvi-warning';
+    case 'urgent':
+      return 'bg-destructive/10 text-destructive';
+    case 'open':
+      return 'bg-halvi-royal/10 text-halvi-royal';
+    case 'waiting':
+      return 'bg-halvi-amber/10 text-halvi-amber';
+    case 'completed':
+      return 'bg-green-500/10 text-green-500';
     case 'pending':
     default:
       return 'bg-halvi-accent/10 text-halvi-accent';

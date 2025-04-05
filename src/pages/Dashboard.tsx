@@ -5,8 +5,58 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { BarChart3, LineChart, ArrowUpRight, ArrowDownRight, ShoppingBag, Users, DollarSign, TrendingUp, Clock, Activity } from 'lucide-react';
 import PulseFeed from '@/components/dashboard/PulseFeed';
 import Chart from '@/components/dashboard/Chart';
-import StatsCard from '@/components/dashboard/StatsCard';
 import { FeedItem } from '@/types/dashboard';
+
+// StatsCard component with correct types
+interface StatsCardProps {
+  title: string;
+  value: string;
+  icon: React.ElementType;
+  change: string;
+  trend: 'up' | 'down';
+  description: string;
+}
+
+const StatsCard: React.FC<StatsCardProps> = ({
+  title,
+  value,
+  icon: Icon,
+  change,
+  trend,
+  description
+}) => {
+  return (
+    <Card className="glass-card">
+      <CardContent className="pt-6">
+        <div className="flex items-start justify-between">
+          <div>
+            <p className="text-sm font-medium">{title}</p>
+            <p className="text-3xl font-bold mt-1">{value}</p>
+          </div>
+          <div className="rounded-lg p-2 bg-muted/50">
+            <Icon className="h-6 w-6 text-muted-foreground" />
+          </div>
+        </div>
+        <div className="mt-4 flex items-center text-xs">
+          {trend === 'up' ? (
+            <span className="text-green-500 flex items-center">
+              <ArrowUpRight className="h-3 w-3 mr-1" />
+              {change}
+            </span>
+          ) : (
+            <span className="text-red-500 flex items-center">
+              <ArrowDownRight className="h-3 w-3 mr-1" />
+              {change}
+            </span>
+          )}
+          <span className="ml-1 text-muted-foreground">
+            {description}
+          </span>
+        </div>
+      </CardContent>
+    </Card>
+  );
+};
 
 const Dashboard = () => {
   return (
@@ -83,8 +133,13 @@ const Dashboard = () => {
           <CardContent>
             <Chart 
               type="pie"
-              data={[44, 55, 13, 33].map(value => ({ value }))}
-              labels={["Food", "Products", "Services", "Others"]}
+              data={[
+                { name: "Food", value: 44 },
+                { name: "Products", value: 55 },
+                { name: "Services", value: 13 },
+                { name: "Others", value: 33 }
+              ]}
+              categories={["Food", "Products", "Services", "Others"]}
               colors={["#4A80F0", "#FF994B", "#1AD598", "#FFC542"]}
               height={300}
             />
@@ -127,7 +182,7 @@ const Dashboard = () => {
             <Clock className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <PulseFeed items={feedItems} />
+            <PulseFeed items={dashboardFeedItems} />
           </CardContent>
         </Card>
       </div>
@@ -135,7 +190,7 @@ const Dashboard = () => {
   );
 };
 
-const feedItems: FeedItem[] = [
+const dashboardFeedItems: FeedItem[] = [
   {
     id: "1",
     type: "order",

@@ -15,6 +15,7 @@ interface LoginFormProps {
   redirectTo: string;
 }
 
+// Form schema validation
 const loginSchema = z.object({
   email: z.string().email("Please enter a valid myhalvi.com email address"),
   password: z.string().min(1, "Password is required"),
@@ -37,12 +38,16 @@ const LoginForm: React.FC<LoginFormProps> = ({ userType, redirectTo }) => {
   const onSubmit = (data: LoginFormValues) => {
     setIsLoading(true);
     
-    // Simulate loading
+    // Simulate authentication - will be replaced with real auth later
     setTimeout(() => {
       setIsLoading(false);
+      
+      // Show success message
       toast.success(`Logged in as ${userType === 'admin' ? 'Super Admin' : 'Support Agent'}`);
-      // Fix: Navigate to the correct dashboard page
-      navigate(redirectTo);
+      
+      // Navigate to the dashboard immediately after login
+      console.log(`Redirecting to: ${redirectTo}`);
+      navigate(redirectTo, { replace: true });
     }, 1000);
   };
 
