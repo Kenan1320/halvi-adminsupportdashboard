@@ -1,157 +1,173 @@
 
 import React from 'react';
-import DashboardLayout from '@/components/layout/DashboardLayout';
-import StatsCard from '@/components/dashboard/StatsCard';
-import Chart from '@/components/dashboard/Chart';
+import DashboardLayout from '../components/layout/DashboardLayout';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { BarChart3, LineChart, ArrowUpRight, ArrowDownRight, ShoppingBag, Users, DollarSign, TrendingUp, Clock, Activity } from 'lucide-react';
 import PulseFeed from '@/components/dashboard/PulseFeed';
-import { ShoppingCart, DollarSign, Store, Users } from 'lucide-react';
+import Chart from '@/components/dashboard/Chart';
+import StatsCard from '@/components/dashboard/StatsCard';
+import { FeedItem } from '@/types/dashboard';
 
 const Dashboard = () => {
-  // Sample data for charts
-  const revenueData = [
-    { name: 'Sun', value: 12000 },
-    { name: 'Mon', value: 19000 },
-    { name: 'Tue', value: 15000 },
-    { name: 'Wed', value: 22000 },
-    { name: 'Thu', value: 18000 },
-    { name: 'Fri', value: 27000 },
-    { name: 'Sat', value: 23000 },
-  ];
-
-  const ordersByCategory = [
-    { name: 'Food', value: 35 },
-    { name: 'Grocery', value: 25 },
-    { name: 'Clothing', value: 20 },
-    { name: 'Electronics', value: 15 },
-    { name: 'Other', value: 5 },
-  ];
-
-  const shopApplications = [
-    { name: 'Week 1', value: 12 },
-    { name: 'Week 2', value: 19 },
-    { name: 'Week 3', value: 15 },
-    { name: 'Week 4', value: 22 },
-  ];
-
-  // Sample data for pulse feed
-  const feedItems = [
-    { 
-      id: '1', 
-      type: 'shop', 
-      message: 'New business "Spice Haven" has applied for approval', 
-      time: '10 min ago',
-      status: 'pending'
-    },
-    { 
-      id: '2', 
-      type: 'order', 
-      message: 'Order #12345 has been flagged for review', 
-      time: '25 min ago',
-      status: 'flagged'
-    },
-    { 
-      id: '3', 
-      type: 'product', 
-      message: '5 new products have been uploaded by "Halal Meats Inc."', 
-      time: '1 hour ago'
-    },
-    { 
-      id: '4', 
-      type: 'user', 
-      message: 'Customer reported issue with payment processing', 
-      time: '2 hours ago',
-      status: 'rejected'
-    },
-    { 
-      id: '5', 
-      type: 'shop', 
-      message: '"Modest Fashion Co." shop has been approved', 
-      time: '3 hours ago',
-      status: 'approved'
-    },
-  ];
-
   return (
-    <DashboardLayout>
-      <div className="space-y-6">
-        <h2 className="text-2xl font-bold text-gradient">Dashboard Overview</h2>
+    <DashboardLayout title="Super Admin Dashboard">
+      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6 mb-6">
+        <StatsCard
+          title="Total Revenue"
+          value="$24,532"
+          icon={DollarSign}
+          change="+12.5%"
+          trend="up"
+          description="from last month"
+        />
+        <StatsCard
+          title="New Businesses"
+          value="54"
+          icon={ShoppingBag}
+          change="+8.2%"
+          trend="up"
+          description="from last month"
+        />
+        <StatsCard
+          title="Active Users"
+          value="2,845"
+          icon={Users}
+          change="+18.7%"
+          trend="up"
+          description="from last month"
+        />
+        <StatsCard
+          title="Completed Orders"
+          value="1,257"
+          icon={TrendingUp}
+          change="-2.3%"
+          trend="down"
+          description="from last month"
+        />
+      </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          <StatsCard 
-            title="Total Revenue" 
-            value={156789} 
-            icon={<DollarSign size={20} className="text-white" />} 
-            percentChange={12.5} 
-            trend="up" 
-            prefix="$" 
-            color="bg-halvi-accent/80"
-          />
-          <StatsCard 
-            title="New Businesses" 
-            value={45} 
-            icon={<Store size={20} className="text-white" />} 
-            percentChange={8.2} 
-            trend="up" 
-            color="bg-halvi-success/80"
-          />
-          <StatsCard 
-            title="Orders" 
-            value={1234} 
-            icon={<ShoppingCart size={20} className="text-white" />} 
-            percentChange={3.7} 
-            trend="down" 
-            color="bg-halvi-amber/80"
-          />
-          <StatsCard 
-            title="Active Users" 
-            value={8562} 
-            icon={<Users size={20} className="text-white" />} 
-            percentChange={15.3} 
-            trend="up" 
-            color="bg-halvi-warning/80"
-          />
-        </div>
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+        <Card className="glass-card lg:col-span-2">
+          <CardHeader className="flex flex-row items-center justify-between pb-2">
+            <CardTitle className="text-base font-normal">
+              Revenue Overview
+            </CardTitle>
+            <div className="flex items-center space-x-2 text-sm text-muted-foreground">
+              <span className="rounded-md px-2 py-1 bg-accent/50">Weekly</span>
+              <span>Monthly</span>
+              <span>Yearly</span>
+            </div>
+          </CardHeader>
+          <CardContent>
+            <Chart 
+              type="line"
+              series={[
+                {
+                  name: "Revenue",
+                  data: [4500, 6000, 5500, 7200, 8000, 9000, 11000]
+                }
+              ]}
+              categories={["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul"]}
+              colors={["#4A80F0"]}
+              height={300}
+            />
+          </CardContent>
+        </Card>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div className="lg:col-span-2">
+        <Card className="glass-card">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-base font-normal">
+              Sales Distribution
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
             <Chart 
-              title="Revenue Overview" 
-              type="line" 
-              data={revenueData} 
-              categories={['Revenue']} 
-              dataKey="value" 
-              nameKey="name" 
+              type="donut"
+              series={[44, 55, 13, 33]}
+              labels={["Food", "Products", "Services", "Others"]}
+              colors={["#4A80F0", "#FF994B", "#1AD598", "#FFC542"]}
+              height={300}
             />
-          </div>
-          <div>
-            <Chart 
-              title="Orders by Category" 
-              type="pie" 
-              data={ordersByCategory} 
-              dataKey="value" 
-              nameKey="name" 
-            />
-          </div>
-        </div>
+          </CardContent>
+        </Card>
+      </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div>
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <Card className="glass-card lg:col-span-2">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-base font-normal">
+              Business Growth
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
             <Chart 
-              title="Shop Applications" 
-              type="bar" 
-              data={shopApplications}
-              categories={['Applications']} 
-              dataKey="value" 
-              nameKey="name" 
+              type="bar"
+              series={[
+                {
+                  name: "New Businesses",
+                  data: [40, 55, 42, 58, 72, 60, 65]
+                },
+                {
+                  name: "Active Businesses",
+                  data: [25, 38, 40, 42, 55, 58, 62]
+                }
+              ]}
+              categories={["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul"]}
+              colors={["#4A80F0", "#FF994B"]}
+              height={300}
             />
-          </div>
-          <div className="lg:col-span-2">
+          </CardContent>
+        </Card>
+
+        <Card className="glass-card">
+          <CardHeader className="flex flex-row items-center justify-between pb-2">
+            <CardTitle className="text-base font-normal">
+              Recent Activity
+            </CardTitle>
+            <Clock className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
             <PulseFeed items={feedItems} />
-          </div>
-        </div>
+          </CardContent>
+        </Card>
       </div>
     </DashboardLayout>
   );
 };
+
+const feedItems: FeedItem[] = [
+  {
+    id: "1",
+    type: "order",
+    message: "New order #12345 has been placed",
+    time: "2 minutes ago",
+    status: "pending"
+  },
+  {
+    id: "2",
+    type: "shop",
+    message: "Store 'Medina Spices' applied for verification",
+    time: "10 minutes ago"
+  },
+  {
+    id: "3",
+    type: "product",
+    message: "New product added to 'Halal Delights' store",
+    time: "25 minutes ago"
+  },
+  {
+    id: "4",
+    type: "user",
+    message: "New user signed up from Dubai",
+    time: "1 hour ago"
+  },
+  {
+    id: "5",
+    type: "order",
+    message: "Order #10982 was successfully delivered",
+    time: "2 hours ago",
+    status: "completed"
+  }
+];
 
 export default Dashboard;
