@@ -289,7 +289,7 @@ const RefundsPage = () => {
                   >
                     <CardContent className="p-4">
                       <div className="flex items-start gap-3">
-                        <Badge variant="outline" className="mt-0.5 text-blue-500 border-blue-500">
+                        <Badge variant="secondary" className="mt-0.5 text-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400">
                           {refund.status}
                         </Badge>
                         <div className="flex-1 min-w-0">

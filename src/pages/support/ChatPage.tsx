@@ -20,6 +20,13 @@ import {
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
+export type User = {
+  id: string;
+  name: string;
+  avatar?: string;
+  type: "customer" | "shop" | "agent";
+};
+
 const chatData = {
   id: 1,
   customer: {
