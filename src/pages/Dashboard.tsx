@@ -2,7 +2,7 @@
 import React from 'react';
 import DashboardLayout from '../components/layout/DashboardLayout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { BarChart3, LineChart, ArrowUpRight, ArrowDownRight, ShoppingBag, Users, DollarSign, TrendingUp, Clock, Activity } from 'lucide-react';
+import { BarChart3, LineChart, ArrowUpRight, ArrowDownRight, ShoppingBag, Users, DollarSign, TrendingUp, Clock } from 'lucide-react';
 import PulseFeed from '@/components/dashboard/PulseFeed';
 import Chart from '@/components/dashboard/Chart';
 import { FeedItem } from '@/types/dashboard';
@@ -119,7 +119,6 @@ const Dashboard = () => {
               ]}
               categories={["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul"]}
               colors={["#4A80F0"]}
-              height={300}
             />
           </CardContent>
         </Card>
@@ -141,7 +140,6 @@ const Dashboard = () => {
               ]}
               categories={["Food", "Products", "Services", "Others"]}
               colors={["#4A80F0", "#FF994B", "#1AD598", "#FFC542"]}
-              height={300}
             />
           </CardContent>
         </Card>
@@ -169,7 +167,6 @@ const Dashboard = () => {
               ]}
               categories={["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul"]}
               colors={["#4A80F0", "#FF994B"]}
-              height={300}
             />
           </CardContent>
         </Card>

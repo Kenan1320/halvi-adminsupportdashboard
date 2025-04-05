@@ -5,13 +5,19 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Button } from "@/components/ui/button";
 import { Sun, Moon, Shield, Headset, LogIn } from 'lucide-react';
 import { useTheme } from '@/hooks/use-theme';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
-import LoginForm from '@/components/auth/LoginForm';
 
 const Index = () => {
   const navigate = useNavigate();
   const { theme, toggleTheme } = useTheme();
-  const [loginMode, setLoginMode] = React.useState<'admin' | 'support' | null>(null);
+
+  // Direct navigation handlers
+  const navigateToAdmin = () => {
+    navigate('/dashboard');
+  };
+
+  const navigateToSupport = () => {
+    navigate('/support');
+  };
 
   return (
     <div className="min-h-screen w-full flex flex-col items-center justify-center p-4 bg-background">
@@ -55,7 +61,7 @@ const Index = () => {
           <CardFooter>
             <Button 
               className="w-full" 
-              onClick={() => setLoginMode('admin')}
+              onClick={navigateToAdmin}
             >
               <LogIn className="mr-2 h-4 w-4" />
               Login as Super Admin
@@ -84,7 +90,7 @@ const Index = () => {
             <Button
               className="w-full"
               variant="secondary"
-              onClick={() => setLoginMode('support')}
+              onClick={navigateToSupport}
             >
               <LogIn className="mr-2 h-4 w-4" />
               Login as Support Agent
@@ -98,34 +104,6 @@ const Index = () => {
           © {new Date().getFullYear()} Halvi. The Command Center of the Halal Economy.
         </p>
       </div>
-
-      {/* Login Dialog */}
-      <Dialog open={!!loginMode} onOpenChange={(open) => !open && setLoginMode(null)}>
-        <DialogContent className="sm:max-w-md">
-          <DialogHeader>
-            <DialogTitle className="flex items-center gap-2">
-              {loginMode === 'admin' ? (
-                <>
-                  <Shield className="h-5 w-5 text-halvi-accent" />
-                  Super Admin Login
-                </>
-              ) : (
-                <>
-                  <Headset className="h-5 w-5 text-halvi-amber" />
-                  Support Agent Login
-                </>
-              )}
-            </DialogTitle>
-            <DialogDescription>
-              Enter your credentials to access the {loginMode === 'admin' ? 'Super Admin' : 'Support'} Dashboard
-            </DialogDescription>
-          </DialogHeader>
-          <LoginForm 
-            userType={loginMode || 'admin'} 
-            redirectTo={loginMode === 'admin' ? '/dashboard' : '/support'} 
-          />
-        </DialogContent>
-      </Dialog>
     </div>
   );
 };
