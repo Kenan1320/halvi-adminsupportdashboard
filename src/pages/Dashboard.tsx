@@ -111,6 +111,7 @@ const Dashboard = () => {
           <CardContent>
             <Chart 
               type="line"
+              title="Revenue Trends"
               data={[
                 {
                   name: "Revenue",
@@ -119,6 +120,7 @@ const Dashboard = () => {
               ]}
               categories={["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul"]}
               colors={["#4A80F0"]}
+              dataKey="data"
             />
           </CardContent>
         </Card>
@@ -132,6 +134,7 @@ const Dashboard = () => {
           <CardContent>
             <Chart 
               type="pie"
+              title="Product Categories"
               data={[
                 { name: "Food", value: 44 },
                 { name: "Products", value: 55 },
@@ -140,6 +143,7 @@ const Dashboard = () => {
               ]}
               categories={["Food", "Products", "Services", "Others"]}
               colors={["#4A80F0", "#FF994B", "#1AD598", "#FFC542"]}
+              dataKey="value"
             />
           </CardContent>
         </Card>
@@ -155,6 +159,7 @@ const Dashboard = () => {
           <CardContent>
             <Chart 
               type="bar"
+              title="Monthly Business Activity"
               data={[
                 {
                   name: "New Businesses",
@@ -167,6 +172,7 @@ const Dashboard = () => {
               ]}
               categories={["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul"]}
               colors={["#4A80F0", "#FF994B"]}
+              dataKey="data"
             />
           </CardContent>
         </Card>

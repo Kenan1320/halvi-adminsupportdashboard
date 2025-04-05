@@ -20,14 +20,17 @@ import { cn } from '@/lib/utils';
 type ChartType = 'line' | 'bar' | 'pie';
 type TimeFrame = '7days' | 'month' | 'year';
 
-interface ChartData {
-  [key: string]: string | number;
+interface ChartDataItem {
+  name: string;
+  data?: number[];
+  value?: number;
+  [key: string]: string | number | number[] | undefined;
 }
 
 interface ChartProps {
   title: string;
   type: ChartType;
-  data: ChartData[];
+  data: ChartDataItem[];
   categories?: string[];
   colors?: string[];
   dataKey: string;
@@ -46,7 +49,7 @@ const Chart: React.FC<ChartProps> = ({
   className,
 }) => {
   const [timeFrame, setTimeFrame] = useState<TimeFrame>('7days');
-  const [chartData, setChartData] = useState<ChartData[]>([]);
+  const [chartData, setChartData] = useState<ChartDataItem[]>([]);
 
   // Simulate different data for different time frames
   useEffect(() => {
@@ -54,20 +57,26 @@ const Chart: React.FC<ChartProps> = ({
       setChartData(data);
     } else if (timeFrame === 'month') {
       // Simulate monthly data
-      setChartData(data.map(item => ({
-        ...item,
-        [dataKey]: typeof item[dataKey] === 'number' 
-          ? Math.round((item[dataKey] as number) * 4.5) 
-          : item[dataKey]
-      })));
+      setChartData(data.map(item => {
+        const newItem = { ...item };
+        if (Array.isArray(item[dataKey])) {
+          newItem[dataKey] = (item[dataKey] as number[]).map(val => Math.round(val * 4.5));
+        } else if (typeof item[dataKey] === 'number') {
+          newItem[dataKey] = Math.round((item[dataKey] as number) * 4.5);
+        }
+        return newItem;
+      }));
     } else {
       // Simulate yearly data
-      setChartData(data.map(item => ({
-        ...item,
-        [dataKey]: typeof item[dataKey] === 'number' 
-          ? Math.round((item[dataKey] as number) * 12) 
-          : item[dataKey]
-      })));
+      setChartData(data.map(item => {
+        const newItem = { ...item };
+        if (Array.isArray(item[dataKey])) {
+          newItem[dataKey] = (item[dataKey] as number[]).map(val => Math.round(val * 12));
+        } else if (typeof item[dataKey] === 'number') {
+          newItem[dataKey] = Math.round((item[dataKey] as number) * 12);
+        }
+        return newItem;
+      }));
     }
   }, [timeFrame, data, dataKey]);
 

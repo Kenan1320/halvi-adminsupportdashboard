@@ -11,11 +11,11 @@ const Index = () => {
   const { theme, toggleTheme } = useTheme();
 
   // Direct navigation handlers
-  const navigateToAdmin = () => {
+  const handleAdminClick = () => {
     navigate('/dashboard');
   };
 
-  const navigateToSupport = () => {
+  const handleSupportClick = () => {
     navigate('/support');
   };
 
@@ -41,7 +41,7 @@ const Index = () => {
       </div>
       
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-3xl">
-        <Card className="glass-card relative overflow-hidden group hover:shadow-glow-md transition-all duration-300">
+        <Card className="glass-card relative overflow-hidden group hover:shadow-glow-md transition-all duration-300 cursor-pointer" onClick={handleAdminClick}>
           <div className="absolute inset-0 bg-gradient-to-br from-halvi-royal/20 to-halvi-accent/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
@@ -61,7 +61,7 @@ const Index = () => {
           <CardFooter>
             <Button 
               className="w-full" 
-              onClick={navigateToAdmin}
+              onClick={handleAdminClick}
             >
               <LogIn className="mr-2 h-4 w-4" />
               Login as Super Admin
@@ -69,7 +69,7 @@ const Index = () => {
           </CardFooter>
         </Card>
 
-        <Card className="glass-card relative overflow-hidden group hover:shadow-glow-md transition-all duration-300">
+        <Card className="glass-card relative overflow-hidden group hover:shadow-glow-md transition-all duration-300 cursor-pointer" onClick={handleSupportClick}>
           <div className="absolute inset-0 bg-gradient-to-br from-halvi-amber/20 to-halvi-accent/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
@@ -90,7 +90,7 @@ const Index = () => {
             <Button
               className="w-full"
               variant="secondary"
-              onClick={navigateToSupport}
+              onClick={handleSupportClick}
             >
               <LogIn className="mr-2 h-4 w-4" />
               Login as Support Agent
