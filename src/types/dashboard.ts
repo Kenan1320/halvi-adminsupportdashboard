@@ -6,5 +6,5 @@ export interface FeedItem {
   type: FeedItemType;
   message: string;
   time: string;
-  status?: string;
+  status?: "pending" | "approved" | "rejected" | "flagged" | "completed";
 }

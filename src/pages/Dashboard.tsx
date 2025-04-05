@@ -61,7 +61,7 @@ const Dashboard = () => {
           <CardContent>
             <Chart 
               type="line"
-              series={[
+              data={[
                 {
                   name: "Revenue",
                   data: [4500, 6000, 5500, 7200, 8000, 9000, 11000]
@@ -82,8 +82,8 @@ const Dashboard = () => {
           </CardHeader>
           <CardContent>
             <Chart 
-              type="donut"
-              series={[44, 55, 13, 33]}
+              type="pie"
+              data={[44, 55, 13, 33]}
               labels={["Food", "Products", "Services", "Others"]}
               colors={["#4A80F0", "#FF994B", "#1AD598", "#FFC542"]}
               height={300}
@@ -102,7 +102,7 @@ const Dashboard = () => {
           <CardContent>
             <Chart 
               type="bar"
-              series={[
+              data={[
                 {
                   name: "New Businesses",
                   data: [40, 55, 42, 58, 72, 60, 65]

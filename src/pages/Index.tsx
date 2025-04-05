@@ -3,12 +3,15 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Sun, Moon, Shield, Headset } from 'lucide-react';
+import { Sun, Moon, Shield, Headset, LogIn } from 'lucide-react';
 import { useTheme } from '@/hooks/use-theme';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
+import LoginForm from '@/components/auth/LoginForm';
 
 const Index = () => {
   const navigate = useNavigate();
   const { theme, toggleTheme } = useTheme();
+  const [loginMode, setLoginMode] = React.useState<'admin' | 'support' | null>(null);
 
   return (
     <div className="min-h-screen w-full flex flex-col items-center justify-center p-4 bg-background">
@@ -52,8 +55,9 @@ const Index = () => {
           <CardFooter>
             <Button 
               className="w-full" 
-              onClick={() => navigate('/dashboard')}
+              onClick={() => setLoginMode('admin')}
             >
+              <LogIn className="mr-2 h-4 w-4" />
               Login as Super Admin
             </Button>
           </CardFooter>
@@ -80,8 +84,9 @@ const Index = () => {
             <Button
               className="w-full"
               variant="secondary"
-              onClick={() => navigate('/support')}
+              onClick={() => setLoginMode('support')}
             >
+              <LogIn className="mr-2 h-4 w-4" />
               Login as Support Agent
             </Button>
           </CardFooter>
@@ -93,6 +98,34 @@ const Index = () => {
           © {new Date().getFullYear()} Halvi. The Command Center of the Halal Economy.
         </p>
       </div>
+
+      {/* Login Dialog */}
+      <Dialog open={!!loginMode} onOpenChange={(open) => !open && setLoginMode(null)}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              {loginMode === 'admin' ? (
+                <>
+                  <Shield className="h-5 w-5 text-halvi-accent" />
+                  Super Admin Login
+                </>
+              ) : (
+                <>
+                  <Headset className="h-5 w-5 text-halvi-amber" />
+                  Support Agent Login
+                </>
+              )}
+            </DialogTitle>
+            <DialogDescription>
+              Enter your credentials to access the {loginMode === 'admin' ? 'Super Admin' : 'Support'} Dashboard
+            </DialogDescription>
+          </DialogHeader>
+          <LoginForm 
+            userType={loginMode || 'admin'} 
+            redirectTo={loginMode === 'admin' ? '/dashboard' : '/support'} 
+          />
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
