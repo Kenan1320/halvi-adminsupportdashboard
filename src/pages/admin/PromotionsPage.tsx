@@ -5,7 +5,7 @@ import PageHeader from '@/components/admin/PageHeader';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import SmartTable from '@/components/admin/SmartTable';
 import StatisticsCard from '@/components/admin/StatisticsCard';
-import { Button } from '@/components/ui/button";
+import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { 
   Tag, 
@@ -17,7 +17,11 @@ import {
   Code,
   PlusCircle,
   Percent,
-  TrendingUp
+  TrendingUp,
+  CheckCircle2,
+  XCircle,
+  Filter,
+  Download
 } from 'lucide-react';
 
 // Mock data

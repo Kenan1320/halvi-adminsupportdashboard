@@ -5,7 +5,7 @@ import PageHeader from '@/components/admin/PageHeader';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import SmartTable from '@/components/admin/SmartTable';
 import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card";
+import { Card } from "@/components/ui/card";
 import { 
   Settings, 
   Globe,
@@ -20,7 +20,12 @@ import {
   Clock,
   MessageSquare,
   RefreshCw,
-  PlusCircle
+  PlusCircle,
+  CheckCircle2,
+  XCircle,
+  Filter,
+  Download,
+  Search
 } from 'lucide-react';
 
 // Mock data
@@ -286,7 +291,7 @@ const SettingsPage = () => {
                           <span className="text-sm text-muted-foreground">%</span>
                         </div>
                       </div>
-                      <p className="text-xs text-muted-foreground mt-1">For shops with monthly sales > $10,000</p>
+                      <p className="text-xs text-muted-foreground mt-1">For shops with monthly sales {'>'} $10,000</p>
                     </div>
                   </div>
                 </Card>
@@ -714,7 +719,7 @@ const SettingsPage = () => {
                 <Card className="p-4">
                   <div className="flex items-start gap-3 mb-3">
                     <div className="h-8 w-8 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
-                      <User size={16} className="text-blue-500" />
+                      <Users size={16} className="text-blue-500" />
                     </div>
                     <div>
                       <h4 className="font-medium">Admin</h4>
