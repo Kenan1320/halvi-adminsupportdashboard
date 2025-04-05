@@ -6,26 +6,19 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { 
-  BarChart3, 
-  LineChart as LineChartIcon, 
-  PieChart as PieChartIcon,
-  BarChart2,
-  Activity,
-  Users,
-  ShoppingCart,
-  CreditCard,
-  Smartphone,
-  Monitor,
-  ArrowUpRight,
-  ArrowRight,
-  ArrowDownRight,
+  BarChart, 
+  LineChart, 
+  PieChart, 
+  Clock, 
+  ArrowUpRight, 
+  ArrowDownRight, 
+  Download, 
   Filter,
-  Download,
-  Search,
-  MoreVertical,
-  Store as StoreIcon
+  ShoppingBag,
+  Monitor,
+  ChevronDown
 } from 'lucide-react';
-import { AreaChart, Area, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend, PieChart, Pie, Cell } from 'recharts';
+import { AreaChart, Area, BarChart2, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend, PieChart, Pie, Cell } from 'recharts';
 
 // Mock data
 const monthlyRevenue = [
