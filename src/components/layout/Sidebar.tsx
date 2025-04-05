@@ -15,7 +15,12 @@ import {
   TicketCheck,
   RefreshCcw,
   AlertCircle,
-  UserPlus
+  UserPlus,
+  Wallet,
+  Mail,
+  AlertTriangle,
+  BarChart2,
+  MessageCircle
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useLocation, Link } from 'react-router-dom';
@@ -34,13 +39,17 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, toggleSidebar }) => {
   // Admin navigation items
   const adminNavItems = [
     { icon: LayoutDashboard, label: 'Dashboard', path: '/dashboard', isActive: location.pathname === '/dashboard' },
-    { icon: Store, label: 'Shops', path: '/shops', isActive: location.pathname === '/shops' },
-    { icon: ShoppingBag, label: 'Products', path: '/products', isActive: location.pathname === '/products' },
-    { icon: ShoppingCart, label: 'Orders', path: '/orders', isActive: location.pathname === '/orders' },
-    { icon: PieChart, label: 'Revenue', path: '/revenue', isActive: location.pathname === '/revenue' },
-    { icon: Users, label: 'Users', path: '/users', isActive: location.pathname === '/users' },
-    { icon: Tag, label: 'Promotions', path: '/promotions', isActive: location.pathname === '/promotions' },
-    { icon: Settings, label: 'Settings', path: '/settings', isActive: location.pathname === '/settings' },
+    { icon: Store, label: 'Shops', path: '/shops', isActive: location.pathname.startsWith('/shops') },
+    { icon: ShoppingBag, label: 'Products', path: '/products', isActive: location.pathname.startsWith('/products') },
+    { icon: ShoppingCart, label: 'Orders', path: '/orders', isActive: location.pathname.startsWith('/orders') },
+    { icon: PieChart, label: 'Revenue', path: '/revenue', isActive: location.pathname.startsWith('/revenue') },
+    { icon: Users, label: 'Users', path: '/users', isActive: location.pathname.startsWith('/users') },
+    { icon: Tag, label: 'Promotions', path: '/promotions', isActive: location.pathname.startsWith('/promotions') },
+    { icon: Wallet, label: 'Admin Wallet', path: '/wallet', isActive: location.pathname.startsWith('/wallet') },
+    { icon: MessageCircle, label: 'Communication', path: '/communication', isActive: location.pathname.startsWith('/communication') },
+    { icon: AlertTriangle, label: 'Escalations', path: '/escalations', isActive: location.pathname.startsWith('/escalations') },
+    { icon: BarChart2, label: 'Analytics', path: '/analytics', isActive: location.pathname.startsWith('/analytics') },
+    { icon: Settings, label: 'Settings', path: '/settings', isActive: location.pathname.startsWith('/settings') },
   ];
 
   // Support navigation items
