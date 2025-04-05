@@ -37,13 +37,13 @@ const chatData = {
     phone: '+44 7700 900123',
     joinDate: 'May 12, 2022',
     orderCount: 24,
-    type: 'customer'
+    type: 'customer' as const
   },
   agent: {
     id: 'agent-1',
     name: 'Agent Smith',
     avatar: '/placeholder.svg',
-    type: 'agent'
+    type: 'agent' as const
   },
   startTime: '09:00 AM',
   duration: '25 minutes',

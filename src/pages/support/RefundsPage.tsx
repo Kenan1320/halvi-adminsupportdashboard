@@ -138,11 +138,11 @@ const RefundsPage = () => {
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'pending':
-        return 'yellow';
+        return 'secondary';
       case 'investigating':
-        return 'blue';
+        return 'outline';
       case 'approved':
-        return 'green';
+        return 'secondary';
       case 'rejected':
         return 'destructive';
       case 'completed':
@@ -342,7 +342,6 @@ const RefundsPage = () => {
           </div>
         </div>
         
-        {/* Refund Detail View */}
         <div className="md:col-span-2">
           <Tabs defaultValue="details">
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-4">
