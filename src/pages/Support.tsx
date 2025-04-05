@@ -132,7 +132,7 @@ const Support = () => {
                 <CardContent className="pt-6">
                   <div className="space-y-4">
                     {supportFeedItems
-                      .filter(item => item.status === 'urgent')
+                      .filter(item => item.status === "urgent")
                       .map((item) => (
                         <div key={item.id} className="flex items-start gap-4 p-3 rounded-lg bg-destructive/10 hover:bg-destructive/20 transition-colors">
                           <Avatar className="h-9 w-9">
@@ -152,7 +152,7 @@ const Support = () => {
                         </div>
                     ))}
                     
-                    {supportFeedItems.filter(item => item.status === 'urgent').length === 0 && (
+                    {supportFeedItems.filter(item => item.status === "urgent").length === 0 && (
                       <div className="flex flex-col items-center justify-center py-12 text-center">
                         <div className="h-12 w-12 rounded-full bg-muted flex items-center justify-center mb-4">
                           <TicketCheck className="h-6 w-6 text-muted-foreground" />

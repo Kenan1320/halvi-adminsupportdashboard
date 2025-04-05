@@ -41,6 +41,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ userType, redirectTo }) => {
     setTimeout(() => {
       setIsLoading(false);
       toast.success(`Logged in as ${userType === 'admin' ? 'Super Admin' : 'Support Agent'}`);
+      // Fix: Navigate to the correct dashboard page
       navigate(redirectTo);
     }, 1000);
   };

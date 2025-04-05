@@ -83,7 +83,7 @@ const Dashboard = () => {
           <CardContent>
             <Chart 
               type="pie"
-              data={[44, 55, 13, 33]}
+              data={[44, 55, 13, 33].map(value => ({ value }))}
               labels={["Food", "Products", "Services", "Others"]}
               colors={["#4A80F0", "#FF994B", "#1AD598", "#FFC542"]}
               height={300}
