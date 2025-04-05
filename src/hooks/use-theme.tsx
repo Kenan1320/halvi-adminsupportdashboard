@@ -30,20 +30,27 @@ export function ThemeProvider({
   ...props
 }: ThemeProviderProps) {
   const [theme, setTheme] = React.useState<Theme>(
-    () => (localStorage.getItem(storageKey) as Theme) || defaultTheme
+    () => {
+      if (typeof window !== "undefined") {
+        return (localStorage.getItem(storageKey) as Theme) || defaultTheme;
+      }
+      return defaultTheme;
+    }
   );
 
   React.useEffect(() => {
-    const root = window.document.documentElement;
-    
-    // Remove old theme class
-    root.classList.remove("light", "dark");
-    
-    // Add new theme class
-    root.classList.add(theme);
-    
-    // Save to localStorage
-    localStorage.setItem(storageKey, theme);
+    if (typeof window !== "undefined") {
+      const root = window.document.documentElement;
+      
+      // Remove old theme class
+      root.classList.remove("light", "dark");
+      
+      // Add new theme class
+      root.classList.add(theme);
+      
+      // Save to localStorage
+      localStorage.setItem(storageKey, theme);
+    }
   }, [theme, storageKey]);
 
   const toggleTheme = React.useCallback(() => {
